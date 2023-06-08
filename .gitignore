@@ -6,3 +6,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# pg data storing data for docker postgres container
+.pg_data
