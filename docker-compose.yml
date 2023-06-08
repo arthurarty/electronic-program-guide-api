@@ -1,20 +1,21 @@
 services:
-  db:
-    image: postgres
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init-user-db.sh
+  postgres:
+    image: postgres:15.3
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - DOCKER_USER_PASSWORD=not_a_real_passsword
+    volumes:
+      - ./.pg_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
+  # web:
+  #   build: .
+  #   command: python manage.py runserver 0.0.0.0:8000
+  #   volumes:
+  #     - .:/usr/src/app
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - postgres
