@@ -1,4 +1,13 @@
 import subprocess
+from typing import Optional
+
+
+def create_config_xml(
+    site: str, site_id: str, xmltv_id: str, site_name: Optional[str]
+):
+    # function takes in channel details and creates configs
+    pass
+
 
 # Define the path to your bash script
 script_path = '.wg++/run.sh'
