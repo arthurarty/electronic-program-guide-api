@@ -12,3 +12,6 @@ stdout, stderr = process.communicate()
 # Print the output
 print("Standard Output:\n", stdout.decode())
 print("Standard Error:\n", stderr.decode())
+
+
+# TODO: Store the result of the log.
