@@ -6,7 +6,7 @@ from grab_requests.serializers import GrabRequestSerializer
 
 
 class GrabRequestListView(generics.ListCreateAPIView):
-    queryset = GrabRequest.objects.all()[:60]
+    queryset = GrabRequest.objects.order_by('-created_at').all()[:60]
     serializer_class = GrabRequestSerializer
 
 
