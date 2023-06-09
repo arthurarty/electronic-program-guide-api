@@ -10,4 +10,4 @@ class GrabRequest(BaseTimeStampedModel, models.Model):
     site=models.CharField()
     site_id=models.CharField()
     xmltv_id=models.CharField()
-    result_xml=models.TextField()
+    result_xml=models.TextField(blank=True)
