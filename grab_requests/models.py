@@ -7,7 +7,7 @@ class GrabRequest(BaseTimeStampedModel, models.Model):
     A grab request is a request to get a programming guide
     from a given site/channel.
     """
-    site=models.CharField()
-    site_id=models.CharField()
-    xmltv_id=models.CharField()
+    site=models.CharField(max_length=255)
+    site_id=models.CharField(max_length=255)
+    xmltv_id=models.CharField(max_length=255)
     result_xml=models.TextField(blank=True)
