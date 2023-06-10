@@ -1,9 +1,4 @@
 import logging
-from dotenv import load_dotenv
-import os
 
-
-load_dotenv()
-
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
-logger.setLevel(os.getenv('LOG_LEVEL', 'DEBUG'))
