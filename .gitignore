@@ -21,3 +21,12 @@ dist/
 
 # pyenv
 .python-version
+
+
+# Web grab specific
+WebGrab++.config.xml
+WebGrab++.log.txt
+WGLicense.log.txt
+guide.xml
+robots/
+*.robots
