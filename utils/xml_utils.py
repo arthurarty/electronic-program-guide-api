@@ -29,7 +29,12 @@ def create_config_xml(
     """
     if not site_name:
         site_name = xmltv_id
-    xml_str = DEFAULT_XML_STR.format(site=site, site_id=site_id, xmltv_id=xmltv_id, site_name=site_name)
+    xml_str = DEFAULT_XML_STR.format(
+        site=site,
+        site_id=site_id,
+        xmltv_id=xmltv_id,
+        site_name=site_name
+    )
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)
     tree.write('output.xml', encoding='utf-8', xml_declaration=True)
