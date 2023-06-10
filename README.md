@@ -3,5 +3,5 @@ Containerising web grab
 
 
 ## How to run this:
-- build the container. `docker build -t web_grab .`
-- run the container and connect to it. `docker run -it web_grab`
+- install the package so that subpackages can import from each other. To do this run `python setup.py install`
+- run the containers `docker compose up`
