@@ -22,7 +22,11 @@ DEFAULT_XML_STR = """<?xml version="1.0"?>
 
 
 def create_config_xml(
-    site: str, site_id: str, xmltv_id: str, site_name: Optional[str] = None
+    site: str,
+    site_id: str,
+    xmltv_id: str,
+    site_name: Optional[str] = None,
+    file_path: Optional[str] = '.wg++/WebGrab++.config.xml'
 ):
     """
     Creates an xml config file for channel to run web_grub against.
@@ -37,7 +41,7 @@ def create_config_xml(
     )
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)
-    tree.write('output.xml', encoding='utf-8', xml_declaration=True)
+    tree.write(file_path, encoding='utf-8', xml_declaration=True)
     logger.info('Done writing config xml file')
 
 
