@@ -2,6 +2,7 @@ from grab_requests.models import GrabRequest
 from rest_framework import serializers
 from typing import Dict, Any
 from common.custom_logging import logger
+from grab_requests.tasks import run_web_grab
 
 
 class GrabRequestSerializer(serializers.ModelSerializer):
@@ -30,5 +31,7 @@ class GrabRequestSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: Dict[str, Any]) -> GrabRequest:
         grab_request = GrabRequest.objects.create(**validated_data)
-        logger.info('We are going to do something here. ***********')
+        run_web_grab.delay(
+            grab_request.site, grab_request.site_id, grab_request.xmltv_id, grab_request.site_name
+        )
         return grab_request

@@ -27,9 +27,9 @@ services:
         condition: service_started
       redis:
         condition: service_started
-  celery_worker_1:
+  celery_worker_one:
     build: .
-    command: python -m celery -A web_grab worker
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1
     depends_on:
       postgres:
         condition: service_started
