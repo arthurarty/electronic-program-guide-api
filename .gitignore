@@ -9,3 +9,15 @@ __pycache__/
 
 # pg data storing data for docker postgres container
 .pg_data
+
+# Distribution / packaging
+build/
+develop-eggs/
+eggs/
+.eggs/
+*.egg-info/
+*.egg
+dist/
+
+# pyenv
+.python-version
