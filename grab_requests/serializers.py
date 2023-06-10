@@ -1,10 +1,10 @@
 from grab_requests.models import GrabRequest
 from rest_framework import serializers
+from typing import Dict, Any
+from common.custom_logging import logger
 
 
 class GrabRequestSerializer(serializers.ModelSerializer):
-    # TODO: Switch this back to a serializers.Serializer so that we can have a custom create
-    # custom create function will be the one to handle the web grab
     class Meta:
         model = GrabRequest
         fields = [
@@ -27,3 +27,8 @@ class GrabRequestSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         ]
+
+    def create(self, validated_data: Dict[str, Any]) -> GrabRequest:
+        grab_request = GrabRequest.objects.create(**validated_data)
+        logger.info('We are going to do something here. ***********')
+        return grab_request
