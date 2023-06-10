@@ -27,3 +27,11 @@ services:
         condition: service_started
       redis:
         condition: service_started
+  celery_worker_1:
+    build: .
+    command: python -m celery -A web_grab worker
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started

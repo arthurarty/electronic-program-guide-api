@@ -24,4 +24,3 @@ typing_extensions==4.6.2
 tzdata==2023.3
 vine==5.0.0
 wcwidth==0.2.6
-web-grab==0.0.0
