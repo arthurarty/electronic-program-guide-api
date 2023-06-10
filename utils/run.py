@@ -1,26 +1,19 @@
 import subprocess
-from typing import Optional
 
 
-def create_config_xml(
-    site: str, site_id: str, xmltv_id: str, site_name: Optional[str]
-):
-    # function takes in channel details and creates configs
-    pass
+def run_web_grab():
+    # Define the path to your bash script
+    script_path = '.wg++/run.sh'
 
+    # Start the bash script using subprocess
+    process = subprocess.Popen(['bash', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-# Define the path to your bash script
-script_path = '.wg++/run.sh'
+    # Wait for the script to finish and capture the output
+    stdout, stderr = process.communicate()
 
-# Start the bash script using subprocess
-process = subprocess.Popen(['bash', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-# Wait for the script to finish and capture the output
-stdout, stderr = process.communicate()
-
-# Print the output
-print("Standard Output:\n", stdout.decode())
-print("Standard Error:\n", stderr.decode())
+    # Print the output
+    print("Standard Output:\n", stdout.decode())
+    print("Standard Error:\n", stderr.decode())
 
 
 # TODO: Store the result of the log.
