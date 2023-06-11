@@ -1,15 +1,4 @@
 services:
-  postgres:
-    image: postgres:15.3
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - ./.pg_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    ports:
-      - "5432:5432"
   redis:
     image: "redis:7.0.11"
     command: redis-server
@@ -23,15 +12,11 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      postgres:
-        condition: service_started
       redis:
         condition: service_started
   celery_worker_one:
     build: .
     command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1
     depends_on:
-      postgres:
-        condition: service_started
       redis:
         condition: service_started
