@@ -21,4 +21,4 @@ class GrabRequest(BaseTimeStampedModel, models.Model):
     status=models.CharField(
         max_length=50, choices=[(choice, choice.value) for choice in RequestStatusEnum], default="PENDING",
     )
-    site_name=models.CharField(max_length=255, blank=True)  # sometimes site_name might be different from xmltv_id
+    channel_name=models.CharField(max_length=255, blank=True)  # sometimes site_name might be different from xmltv_id
