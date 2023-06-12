@@ -25,19 +25,19 @@ def create_config_xml(
     site: str,
     site_id: str,
     xmltv_id: str,
-    site_name: Optional[str] = None,
+    channel_name: Optional[str] = None,
     file_path: Optional[str] = '.wg++/WebGrab++.config.xml'
 ):
     """
     Creates an xml config file for channel to run web_grub against.
     """
-    if not site_name:
-        site_name = xmltv_id
+    if not channel_name:
+        channel_name = xmltv_id
     xml_str = DEFAULT_XML_STR.format(
         site=site,
         site_id=site_id,
         xmltv_id=xmltv_id,
-        site_name=site_name
+        site_name=channel_name
     )
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)

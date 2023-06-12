@@ -13,14 +13,14 @@ def run_web_grab(
     site: str,
     site_id: str,
     xmltv_id: str,
-    site_name: Optional[str] = None,
+    channel_name: Optional[str] = None,
 ):
     logger.info('Creating Config file for request: %s', request_id)
     create_config_xml(
         site, 
         site_id,
         xmltv_id,
-        site_name
+        channel_name
     )
     # Define the path to your bash script
     script_path = '.wg++/run.sh'
