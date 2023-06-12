@@ -32,6 +32,6 @@ class GrabRequestSerializer(serializers.ModelSerializer):
     def create(self, validated_data: Dict[str, Any]) -> GrabRequest:
         grab_request = GrabRequest.objects.create(**validated_data)
         run_web_grab.delay(
-            grab_request.site, grab_request.site_id, grab_request.xmltv_id, grab_request.site_name
+            grab_request.id, grab_request.site, grab_request.site_id, grab_request.xmltv_id, grab_request.site_name
         )
         return grab_request
