@@ -1,5 +1,5 @@
 services:
-  celery_worker_two:
+  celery_worker_three:
     build: .
     command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1
     depends_on:

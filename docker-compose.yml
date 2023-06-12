@@ -20,3 +20,9 @@ services:
     depends_on:
       redis:
         condition: service_started
+  celery_worker_two:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1
+    depends_on:
+      redis:
+        condition: service_started
