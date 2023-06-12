@@ -9,4 +9,3 @@ RUN apt-get install -y iputils-ping
 RUN pip install -r requirements.txt
 RUN echo "1" | apt-get install  -yq mono-complete
 RUN .wg++/install.sh
-# CMD ["bash"]
