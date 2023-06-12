@@ -1,7 +1,6 @@
 from grab_requests.models import GrabRequest
 from rest_framework import serializers
 from typing import Dict, Any
-from common.custom_logging import logger
 from grab_requests.tasks import run_web_grab
 
 
