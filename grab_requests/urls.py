@@ -15,10 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from grab_requests.views import GrabRequestListView, GrabRequestDetailView
+from grab_requests.views import (
+    GrabRequestListView, GrabRequestDetailView, GrabRequestBulkCreateView
+)
 
 
 urlpatterns = [
     path('', GrabRequestListView.as_view(), name='home'),
     path('<int:pk>/', GrabRequestDetailView.as_view(), name='grab_detail_view'),
+    path('bulk-create', GrabRequestBulkCreateView.as_view(), name='bulk_create'),
 ]
