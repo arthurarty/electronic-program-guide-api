@@ -30,3 +30,6 @@ WGLicense.log.txt
 guide.xml
 robots/
 *.robots
+
+# mac specific
+.DS_Store

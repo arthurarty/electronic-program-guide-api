@@ -4,7 +4,7 @@ An async program that takes requests to fetch TV guides, spins up async celery w
 
 ## How to run this:
 #### Requirements
-- Docker
+- [Docker](https://www.docker.com/)
 
 
 ### Local setup/Staging/Development
