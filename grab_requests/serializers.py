@@ -18,6 +18,7 @@ class GrabRequestSerializer(serializers.ModelSerializer):
             'channel_name',
             'created_at',
             'updated_at',
+            'external_id',
         ]
         read_only_fields = [
             'result_xml',
