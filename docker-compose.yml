@@ -11,6 +11,8 @@ services:
       - .:/usr/src/app
     ports:
       - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       redis:
         condition: service_started

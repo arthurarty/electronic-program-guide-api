@@ -14,8 +14,6 @@ services:
     depends_on:
       postgres:
         condition: service_started
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   celery_worker_one:
     depends_on:
       postgres:
