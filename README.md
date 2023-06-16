@@ -3,7 +3,7 @@ An async program that takes requests to fetch TV guides, spins up async celery w
 
 
 ## How to run this:
-#### Requirements
+### Requirements
 - [Docker](https://www.docker.com/)
 
 
@@ -20,6 +20,9 @@ An async program that takes requests to fetch TV guides, spins up async celery w
 - You can do that like this:
 - Access the container using the command `docker compose exec web bash` where web is the name of the service we defined in the docker compose file.
 - Run the migrations using the command `python manage.py migrate`
+
+### API Documentation
+- With the server running go to the url `http://127.0.0.1:8000/swagger-ui`.
 
 ## Docker
 This application makes use of docker to spin up several services to get the job done.

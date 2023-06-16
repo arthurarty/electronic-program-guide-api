@@ -2,7 +2,7 @@ from django.db import models
 from common.models import BaseTimeStampedModel
 from enum import Enum
 
-class RequestStatusEnum(Enum):
+class RequestStatusEnum(str, Enum):
     PENDING = 'PENDING'
     COMPLETE = 'COMPLETE'
     ERROR = 'ERROR'
