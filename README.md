@@ -37,6 +37,13 @@ We are using the [redis server](https://redis.io/docs/about/) as a message broke
 #### celery_worker_one
 We have each celery worker running as a container, this is because of how WebGrab the scrapper we are using runs. Otherwise one celery worker container and making using of concurrency would have worked. To add a new worker copy one of the existing celery_workers. 
 
+## How to:
+1. how to access a service running on the host machine from within a container?
+    -  we set up extra_hosts on the web_service. So from within the `web` service we can access the host like this.
+    ```
+     curl http://host.docker.internal:8080
+    ```
+    to access a service running on port `8080` on the host machine.
 ### Tutorial on how to use Django and Celery.
 - [Real python tutorial](https://realpython.com/asynchronous-tasks-with-django-and-celery/#handle-workloads-asynchronously-with-celery)
 
