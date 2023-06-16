@@ -7,9 +7,6 @@ Containerising web grab
 - Docker
 
 
-### Optional step (only needed if you see odd import issues)
-- install the package so that subpackages can import from each other. To do this run `python setup.py install`
-
 ### Local setup/Staging/Development
 - run the containers `docker compose up`
 
