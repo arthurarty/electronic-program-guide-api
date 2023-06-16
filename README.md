@@ -32,10 +32,11 @@ A postgres for the Django application. Running postgres `postgres:15.3`.
 this is defined in `docker-compose.override.yml`.
 
 #### Redis
-We are using the (redis server)[https://redis.io/docs/about/] as a message broker for Celery. (Celery)[https://docs.celeryq.dev/en/stable/getting-started/introduction.html] is the task queue we are using.
+We are using the [redis server](https://redis.io/docs/about/) as a message broker for Celery. [Celery](https://docs.celeryq.dev/en/stable/getting-started/introduction.html) is the task queue we are using.
 
 #### celery_worker_one
 We have each celery worker running as a container, this is because of how WebGrab the scrapper we are using runs. Otherwise one celery worker container and making using of concurrency would have worked. To add a new worker copy one of the existing celery_workers. 
 
 ### Tutorial on how to use Django and Celery.
-- https://realpython.com/asynchronous-tasks-with-django-and-celery/#handle-workloads-asynchronously-with-celery
+- [Real python tutorial](https://realpython.com/asynchronous-tasks-with-django-and-celery/#handle-workloads-asynchronously-with-celery)
+
