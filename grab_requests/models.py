@@ -31,5 +31,5 @@ class GrabSetting(BaseTimeStampedModel, models.Model):
     """
     Settings for grab requests
     """
-    setting_name=models.CharField(max_length=255)
+    setting_name=models.CharField(max_length=255, unique=True)
     setting_value=models.CharField(max_length=255)

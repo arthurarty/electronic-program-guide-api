@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.urls import path
 from grab_requests.views import (
-    GrabRequestListView, GrabRequestDetailView, GrabRequestBulkCreateView, GrabSettingListView
+    GrabRequestListView, GrabRequestDetailView, GrabRequestBulkCreateView, GrabSettingListView, GrabSettingDetailView
 )
 
 
@@ -25,4 +25,5 @@ urlpatterns = [
     path('<int:pk>/', GrabRequestDetailView.as_view(), name='grab_detail_view'),
     path('bulk-create', GrabRequestBulkCreateView.as_view(), name='bulk_create'),
     path('settings', GrabSettingListView.as_view(), name='grab_settings'),
+    path('settings/<int:pk>/', GrabSettingDetailView.as_view(), name='grab_settings_update'),
 ]

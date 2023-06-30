@@ -43,4 +43,5 @@ class GrabSettingSerializer(serializers.ModelSerializer):
         fields=[
             'setting_name',
             'setting_value',
+            'id',
         ]
