@@ -1,4 +1,4 @@
-from grab_requests.models import GrabRequest
+from grab_requests.models import GrabRequest, GrabSetting
 from rest_framework import serializers
 from typing import Dict, Any
 from grab_requests.tasks import run_web_grab
@@ -35,3 +35,12 @@ class GrabRequestSerializer(serializers.ModelSerializer):
             grab_request.id, grab_request.site, grab_request.site_id, grab_request.xmltv_id, grab_request.channel_name
         )
         return grab_request
+
+
+class GrabSettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=GrabSetting
+        fields=[
+            'setting_name',
+            'setting_value',
+        ]
