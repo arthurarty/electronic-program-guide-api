@@ -23,3 +23,13 @@ class GrabRequest(BaseTimeStampedModel, models.Model):
     )
     channel_name=models.CharField(max_length=255, blank=True)  # sometimes site_name might be different from xmltv_id
     external_id=models.BigIntegerField(blank=True, null=True)
+    icon_tag=models.TextField(blank=True)
+    offset=models.CharField(max_length=255, blank=True)
+
+
+class GrabSetting(BaseTimeStampedModel, models.Model):
+    """
+    Settings for grab requests
+    """
+    setting_name=models.CharField(max_length=255)
+    setting_value=models.CharField(max_length=255)
