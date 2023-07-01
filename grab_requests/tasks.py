@@ -1,10 +1,31 @@
+import json
+import os
 import subprocess
 from typing import Optional
 
-from utils.xml_utils import create_config_xml
+import requests
 from celery import shared_task
-from grab_requests.models import GrabRequest, RequestStatusEnum
+from dotenv import load_dotenv
+from rest_framework import serializers
+
 from common.custom_logging import logger
+from grab_requests.models import GrabRequest, RequestStatusEnum
+from utils.xml_utils import create_config_xml
+
+load_dotenv()
+
+
+class Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = GrabRequest
+        fields = '__all__'
+
+
+def send_call_back(grab_request: GrabRequest):
+    call_back_url = os.environ.get('CALL_BACK_URL')
+    logger.info('Sending data to call_back_url %s', call_back_url)
+    serializer = Serializer(grab_request)
+    return requests.post(call_back_url, data=json.dumps(serializer.data), timeout=60)
 
 
 @shared_task()
@@ -22,7 +43,6 @@ def run_web_grab(
         xmltv_id,
         channel_name
     )
-    # Define the path to your bash script
     script_path = '.wg++/run.sh'
 
     logger.info('Starting webgrab for request: %s: %s', request_id, xmltv_id)
@@ -33,11 +53,10 @@ def run_web_grab(
     # Wait for the script to finish and capture the output
     stdout, stderr = process.communicate()
 
-    # Print the output
     standard_output = stdout.decode()
     standard_error = stderr.decode()
-    print("Standard Output:\n", standard_output)
-    print("Standard Error:\n", stderr.decode())
+    logger.info("Standard Output:\n %s", standard_output)
+    logger.info("Standard Error:\n %s", stderr.decode())
 
     try:
         with open('.wg++/guide.xml', 'r') as reader:
@@ -47,6 +66,9 @@ def run_web_grab(
             grab_request.status = RequestStatusEnum.COMPLETE.value
             grab_request.result_log=f'{str(standard_output)} \n {str(standard_error)}'
             grab_request.save()
+            logger.info('Done Updating now hitting the callback')
+            response = send_call_back(grab_request)
+            logger.info(response)
     except FileNotFoundError:
         logger.info('Grabber failed to create guide.xml for request: %s: %s', request_id, xmltv_id)
         grab_request = GrabRequest.objects.get(id=request_id)
