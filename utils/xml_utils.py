@@ -18,8 +18,13 @@ DEFAULT_XML_STR = """<?xml version="1.0"?>
   <timespan>{time_span}</timespan>
   <update>f</update>
   <channel site="{site}" site_id="{site_id}" xmltv_id="{xmltv_id}">{site_name}</channel>
+  {additional_tags}
 </settings>
 """
+
+
+def prepare_offset_tag(offset: str, xmltv_id: str, site_name: str, suffix_int: int) -> str:
+    return f'<channel offset="{offset}" same_as="{xmltv_id}" xmltv_id="{xmltv_id}_{suffix_int}">{site_name}</channel>'
 
 
 def create_config_xml(
@@ -27,6 +32,7 @@ def create_config_xml(
     site_id: str,
     xmltv_id: str,
     channel_name: Optional[str] = None,
+    offset: Optional[str] = None,
     file_path: Optional[str] = '.wg++/WebGrab++.config.xml'
 ):
     """
@@ -44,6 +50,9 @@ def create_config_xml(
         logger.info('Failed to create config xml')
         raise exception
     logger.info('Using settings -> Timespan: %s, retry: %s', timespan, retry)
+    additional_tags = None
+    if offset:
+        additional_tags = prepare_offset_tag(offset, xmltv_id, channel_name, 2)
     xml_str = DEFAULT_XML_STR.format(
         site=site,
         site_id=site_id,
@@ -51,16 +60,9 @@ def create_config_xml(
         site_name=channel_name,
         time_span=timespan,
         retry=retry,
+        additional_tags=additional_tags,
     )
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)
     tree.write(file_path, encoding='utf-8', xml_declaration=True)
     logger.info('Done writing config xml file')
-
-
-if __name__ == "__main__":
-    create_config_xml(
-        site="turksatkablo.com.tr",
-        site_id="1",
-        xmltv_id="KABLO INFO",
-    )

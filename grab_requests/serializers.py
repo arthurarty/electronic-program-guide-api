@@ -20,6 +20,7 @@ class GrabRequestSerializer(serializers.ModelSerializer):
             'updated_at',
             'external_id',
             'offset',
+            'icon_tag',
         ]
         read_only_fields = [
             'result_xml',

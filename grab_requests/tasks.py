@@ -35,13 +35,15 @@ def run_web_grab(
     site_id: str,
     xmltv_id: str,
     channel_name: Optional[str] = None,
+    offset: Optional[str] = None,
 ):
     logger.info('Creating Config file for request: %s', request_id)
     create_config_xml(
         site, 
         site_id,
         xmltv_id,
-        channel_name
+        channel_name,
+        offset,
     )
     script_path = '.wg++/run.sh'
 
