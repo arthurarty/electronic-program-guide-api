@@ -19,6 +19,7 @@ class GrabRequestSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'external_id',
+            'offset',
         ]
         read_only_fields = [
             'result_xml',
@@ -40,8 +41,4 @@ class GrabRequestSerializer(serializers.ModelSerializer):
 class GrabSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model=GrabSetting
-        fields=[
-            'setting_name',
-            'setting_value',
-            'id',
-        ]
+        fields='__all__'
