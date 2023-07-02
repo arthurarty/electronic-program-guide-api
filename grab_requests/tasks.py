@@ -31,13 +31,14 @@ def send_call_back(grab_request: GrabRequest):
 
 
 def get_icon_tag(xml_str: str) -> str:
+    logger.info('Trying to get icon tag')
     root = ET.fromstring(xml_str)
     channel_tags = root.findall('.//channel')
     for channel_tag in channel_tags:
         icon_tag = channel_tag.find('icon')
-        if icon_tag:
-            return icon_tag.text
-        return None
+        if type(icon_tag) == type(channel_tag):
+            return ET.tostring(icon_tag)
+    return None
 
 
 @shared_task()
@@ -52,7 +53,7 @@ def run_web_grab(
     logger.info('First run without offset')
     grab_request: Optional[GrabRequest] = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, None)
     if offset:
-        # if offset is set, we need to run the grabber twice.
+        # if offset is set, we need to run the grabber twice. First time to pick icon
         logger.info('Running with offset set.')
         grab_request = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, offset)
     resp = send_call_back(grab_request)
@@ -96,14 +97,14 @@ def _run_web_grab(
             logger.info('Updating webgrab request: %s', request_id)
             xml_tv_guide = reader.read()
             grab_request.result_xml=xml_tv_guide
-            if offset:
-                grab_request.result_log=f'{str(standard_output)} \n {str(standard_error)}'
-            else:
-                grab_request.status = RequestStatusEnum.COMPLETE.value
+            grab_request.status = RequestStatusEnum.COMPLETE.value
+            grab_request.result_log=f'{str(standard_output)} \n {str(standard_error)}'
+            if not offset:
                 icon_tag = get_icon_tag(xml_tv_guide)
                 if icon_tag:
                     grab_request.icon_tag=get_icon_tag(xml_tv_guide)
-                grab_request.result_log=f'{str(standard_output)} \n {str(standard_error)}'
+                else:
+                    logger.info('Icon tag not found')
             grab_request.save()
             logger.info('Done Updating now hitting the callback')
             return grab_request
