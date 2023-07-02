@@ -106,7 +106,6 @@ def _run_web_grab(
                 else:
                     logger.info('Icon tag not found')
             grab_request.save()
-            logger.info('Done Updating now hitting the callback')
             return grab_request
     except FileNotFoundError:
         logger.info('Grabber failed to create guide.xml for request: %s: %s', request_id, xmltv_id)
