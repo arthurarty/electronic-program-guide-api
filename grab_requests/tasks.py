@@ -34,7 +34,10 @@ def get_icon_tag(xml_str: str) -> str:
     root = ET.fromstring(xml_str)
     channel_tags = root.findall('.//channel')
     for channel_tag in channel_tags:
-        return channel_tag.find('icon')
+        icon_tag = channel_tag.find('icon')
+        if icon_tag:
+            return icon_tag.text
+        return None
 
 
 @shared_task()
@@ -46,10 +49,14 @@ def run_web_grab(
     channel_name: Optional[str] = None,
     offset: Optional[str] = None,
 ):
-    # if offset:
-    #     # if offset is set, we need to run the grabber twice.
-    #     _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, offset)
-    _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, None)
+    logger.info('First run without offset')
+    grab_request: Optional[GrabRequest] = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, None)
+    if offset:
+        # if offset is set, we need to run the grabber twice.
+        logger.info('Running with offset set.')
+        grab_request = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, offset)
+    resp = send_call_back(grab_request)
+    logger.info(resp)
 
 
 def _run_web_grab(
@@ -59,7 +66,7 @@ def _run_web_grab(
     xmltv_id: str,
     channel_name: Optional[str] = None,
     offset: Optional[str] = None,
-):
+) -> Optional[GrabRequest]:
     logger.info('Creating Config file for request: %s', request_id)
     create_config_xml(
         site, 
@@ -87,17 +94,19 @@ def _run_web_grab(
         with open('.wg++/guide.xml', 'r') as reader:
             grab_request = GrabRequest.objects.get(id=request_id)
             logger.info('Updating webgrab request: %s', request_id)
-            grab_request.result_xml=reader.read()
-            if not offset:
-                grab_request.status = RequestStatusEnum.COMPLETE.value
+            xml_tv_guide = reader.read()
+            grab_request.result_xml=xml_tv_guide
+            if offset:
                 grab_request.result_log=f'{str(standard_output)} \n {str(standard_error)}'
             else:
-                grab_request.icon_tag=get_icon_tag(reader.read())
+                grab_request.status = RequestStatusEnum.COMPLETE.value
+                icon_tag = get_icon_tag(xml_tv_guide)
+                if icon_tag:
+                    grab_request.icon_tag=get_icon_tag(xml_tv_guide)
+                grab_request.result_log=f'{str(standard_output)} \n {str(standard_error)}'
             grab_request.save()
             logger.info('Done Updating now hitting the callback')
-            if not offset:
-                response = send_call_back(grab_request)
-            logger.info(response)
+            return grab_request
     except FileNotFoundError:
         logger.info('Grabber failed to create guide.xml for request: %s: %s', request_id, xmltv_id)
         grab_request = GrabRequest.objects.get(id=request_id)
