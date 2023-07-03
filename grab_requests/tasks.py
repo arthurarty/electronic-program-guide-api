@@ -57,7 +57,8 @@ def run_web_grab(
         logger.info('Running with offset set.')
         grab_request = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, offset)
     resp = send_call_back(grab_request)
-    logger.info(resp)
+    logger.info(resp.status_code)
+    logger.info(resp.text)
 
 
 def _run_web_grab(
