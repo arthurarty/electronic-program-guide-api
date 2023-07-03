@@ -27,7 +27,7 @@ def send_call_back(grab_request: GrabRequest):
     call_back_url = os.environ.get('CALL_BACK_URL')
     logger.info('Sending data to call_back_url %s', call_back_url)
     serializer = Serializer(grab_request)
-    return requests.post(call_back_url, data=json.dumps(serializer.data), timeout=60)
+    return requests.post(call_back_url, json=serializer.data, timeout=60)
 
 
 def get_icon_tag(xml_str: str) -> str:
