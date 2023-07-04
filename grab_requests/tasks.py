@@ -1,8 +1,7 @@
-import json
 import os
 import subprocess
 import xml.etree.ElementTree as ET
-from typing import Optional
+from typing import Optional, Tuple
 
 import requests
 from celery import shared_task
@@ -12,6 +11,8 @@ from rest_framework import serializers
 from common.custom_logging import logger
 from grab_requests.models import GrabRequest, RequestStatusEnum
 from utils.xml_utils import create_config_xml
+from func_timeout import func_timeout, FunctionTimedOut
+
 
 
 load_dotenv()
@@ -61,6 +62,26 @@ def run_web_grab(
     logger.info(resp.text)
 
 
+def run_bash_script() -> Tuple[str, str]:
+    """
+    Using a bash script to trigger the grab.
+    """
+    script_path = '.wg++/run.sh'
+    process = subprocess.Popen(
+        ['bash', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
+
+    # Wait for the script to finish and capture the output
+    logger.info('Getting the output of running grabber.')
+    stdout, stderr = process.communicate()
+
+    standard_output = stdout.decode()
+    standard_error = stderr.decode()
+    logger.info("Standard Output:\n %s", standard_output)
+    logger.info("Standard Error:\n %s", standard_error)
+    return standard_output, standard_error
+
+
 def _run_web_grab(
     request_id: int,
     site: str,
@@ -70,31 +91,22 @@ def _run_web_grab(
     offset: Optional[str] = None,
 ) -> Optional[GrabRequest]:
     logger.info('Creating Config file for request: %s', request_id)
-    create_config_xml(
-        site, 
-        site_id,
-        xmltv_id,
-        channel_name,
-        offset,
-    )
-    script_path = '.wg++/run.sh'
-
-    logger.info('Starting webgrab for request: %s: %s', request_id, xmltv_id)
-    process = subprocess.Popen(
-        ['bash', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
-
-    # Wait for the script to finish and capture the output
-    stdout, stderr = process.communicate()
-
-    standard_output = stdout.decode()
-    standard_error = stderr.decode()
-    logger.info("Standard Output:\n %s", standard_output)
-    logger.info("Standard Error:\n %s", stderr.decode())
-
     try:
+        create_config_xml(
+            site, 
+            site_id,
+            xmltv_id,
+            channel_name,
+            offset,
+        )
+
+        grab_request = GrabRequest.objects.get(id=request_id)
+        logger.info('Pulled grab request from db')
+
+        logger.info('Starting webgrab for request: %s: %s', request_id, xmltv_id)
+        standard_output, standard_error = func_timeout(120, run_bash_script)
+
         with open('.wg++/guide.xml', 'r') as reader:
-            grab_request = GrabRequest.objects.get(id=request_id)
             logger.info('Updating webgrab request: %s', request_id)
             xml_tv_guide = reader.read()
             grab_request.result_xml=xml_tv_guide
@@ -110,7 +122,11 @@ def _run_web_grab(
             return grab_request
     except FileNotFoundError:
         logger.info('Grabber failed to create guide.xml for request: %s: %s', request_id, xmltv_id)
-        grab_request = GrabRequest.objects.get(id=request_id)
         grab_request.status = RequestStatusEnum.ERROR.value
         grab_request.result_log=f'{str(standard_output)} \n {str(standard_error)}'
+        grab_request.save()
+    except FunctionTimedOut:
+        logger.info('Grabber timed out')
+        grab_request.status = RequestStatusEnum.ERROR.value
+        grab_request.result_log='Grabber timed out'
         grab_request.save()
