@@ -10,12 +10,12 @@ services:
       - "host.docker.internal:host-gateway"
   celery_worker_one:
     build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker1@%h
     volumes:
       - .:/usr/src/app
   celery_worker_two:
     build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker2@%h
     volumes:
       - .:/usr/src/app
     depends_on:
