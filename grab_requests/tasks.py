@@ -115,7 +115,7 @@ def _run_web_grab(
             if not offset:
                 icon_tag = get_icon_tag(xml_tv_guide)
                 if icon_tag:
-                    grab_request.icon_tag=get_icon_tag(xml_tv_guide)
+                    grab_request.icon_tag=icon_tag
                 else:
                     logger.info('Icon tag not found')
             grab_request.save()
