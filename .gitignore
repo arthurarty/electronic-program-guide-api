@@ -33,3 +33,5 @@ robots/
 
 # mac specific
 .DS_Store
+/temp
+/.wg++/siteini.pack
