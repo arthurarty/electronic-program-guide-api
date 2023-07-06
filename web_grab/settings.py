@@ -28,11 +28,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+ALLOWED_HOST_STR = os.getenv('ALLOWED_HOSTS')
 ALLOWED_HOSTS = [
     'localhost',
-    '127.0.0.1',
-    os.getenv('BACKEND_HOST'),
-]
+] + ALLOWED_HOST_STR.split(',')
 
 
 # Application definition
