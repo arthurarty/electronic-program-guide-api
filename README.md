@@ -20,6 +20,9 @@ An async program that takes requests to fetch TV guides, spins up async celery w
 - Create `.env` file following the example in `.env.example`
 - Assumes that there is a `postgres` database outside of docker that the app can connect to.
 -  run the containers `docker compose -f docker-compose.yml -f docker-compose.prod.yml up`
+- We can running the container in a detached state using the command.
+`docker compose -f docker-compose.yml -f docker-compose.prod.yml up --detach`
+
 
 ### Migrations
 - Once you have container up and running, you need to get into the `web` service and run migrations.
@@ -53,6 +56,18 @@ We have each celery worker running as a container, this is because of how WebGra
      curl http://host.docker.internal:8080
     ```
     to access a service running on port `8080` on the host machine.
+2. See the docker containers that are running.
+    ```
+     docker ps
+    ```
+3. Get the logs of specific container
+   ```
+   docker logs -f <name_of_container>
+   ```
+   you can get the name of the container from the previous step. 
+4. Check the status of the celery workers.
+    - First get into the web container. `docker compose exec web bash`
+    - Check the workers. `celery -A web_grab inspect active` where `web_grab` is the name of the project. See celery [docs](https://docs.celeryq.dev/en/stable/userguide/monitoring.html)
 ### Tutorial on how to use Django and Celery.
 - [Real python tutorial](https://realpython.com/asynchronous-tasks-with-django-and-celery/#handle-workloads-asynchronously-with-celery)
 
