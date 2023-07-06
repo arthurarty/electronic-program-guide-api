@@ -1,26 +1,27 @@
 import os
-import subprocess
 import shutil
+import subprocess
+
+from common.custom_logging import logger
 
 
 def clone_git_repo(repo_url: str, folder_path: str, root_path: str, destination_folder: str):
-    # Change to the desired directory
     os.chdir(folder_path)
     repo_folder = f'{folder_path}/webgrabplus-siteinipack'
-    print(os.getcwd())
+    logger.info('Current folder: %s',os.getcwd())
     if os.path.exists(repo_folder):
-        print('Directory found, doing a git pull')
+        logger.info('Directory found, doing a git pull')
         os.chdir(repo_folder)
         subprocess.run(['git', 'pull'])
-        print("Git repository updated successfully.")
+        logger.info("Git repository updated successfully.")
         os.getcwd()
     else:
-        print('Doing a git clone')
+        logger.info('Doing a git clone')
         subprocess.run(['git', 'clone', repo_url])
-        print("Git repository cloned successfully.")
+        logger.info("Git repository cloned successfully.")
     os.chdir(root_path)
-    print(os.getcwd())
-    print('Replacing the siteini.pack file')
+    logger.info('Current folder: %s',os.getcwd())
+    logger.info('Replacing the siteini.pack file')
     copy_and_replace_folder(f'{repo_folder}/siteini.pack', destination_folder)
 
 
@@ -31,4 +32,6 @@ def copy_and_replace_folder(source_folder: str, destination_folder: str):
 
     # Copy the entire source folder to the destination folder
     shutil.copytree(source_folder, destination_folder)
-    print(f"Folder '{source_folder}' copied and replaced as '{destination_folder}'.")
+    logger.info(
+        "Folder '%s' copied and replaced as '%s'.", source_folder, destination_folder
+    )
