@@ -43,6 +43,14 @@ This service runs Django.
 A postgres for the Django application. Running postgres `postgres:15.3`.
 this is defined in `docker-compose.override.yml`.
 
+If you are using your own postgres instance running on your local machine you can create a database and create a user like this.
+```
+create database mydb;
+create user myuser with encrypted password 'mypass';
+grant all privileges on database mydb to myuser;
+```
+each of the above is run as a single command. So first you create the database then the user.
+
 #### Redis
 We are using the [redis server](https://redis.io/docs/about/) as a message broker for Celery. [Celery](https://docs.celeryq.dev/en/stable/getting-started/introduction.html) is the task queue we are using.
 
