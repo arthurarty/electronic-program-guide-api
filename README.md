@@ -6,12 +6,18 @@ An async program that takes requests to fetch TV guides, spins up async celery w
 ### Requirements
 - [Docker](https://www.docker.com/)
 
+### App setup
+- Create `.env` file following the example in `.env.example`
+- Add the domain you are hosting the application on to the ALLOWED_HOSTS in the .env file.
+- Spin up the docker containers.
+- Create a folder in the root directory called `temp`. We will use this to clone the siteini.pack in the next step.
+- First you need to hit the endpoint that updates the `siteini.pack` folder. You can look at the swagger docs to find the endpoint. Currently the endpoint for that is `update-site-pack` end it accepts a get request.
 
 ### Local setup/Staging/Development
-- Create `.env` file following the example in `.env.example`
 - run the containers `docker compose up`
 
 ### Production Setup
+- Create `.env` file following the example in `.env.example`
 - Assumes that there is a `postgres` database outside of docker that the app can connect to.
 -  run the containers `docker compose -f docker-compose.yml -f docker-compose.prod.yml up`
 
