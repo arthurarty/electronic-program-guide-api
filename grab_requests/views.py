@@ -41,8 +41,16 @@ class GrabSettingDetailView(generics.RetrieveUpdateAPIView):
 
 
 class UpdateSitePack(APIView):
+    """
+    Update the siteini.pack which contains channels by country.
+    To do that we pull the webgrabplus repo the copy the siteini.pack
+    to the .wg++ folder. 
+    """
     def get(self, request: HttpRequest, format=None) -> Response:
-        folder_path = f'{settings.BASE_DIR}/temp'
-        repo_url = 'https://github.com/SilentButeo2/webgrabplus-siteinipack.git'
-        clone_git_repo(repo_url, folder_path, settings.BASE_DIR, f'{settings.BASE_DIR}/.wg++/siteini.pack')
+        clone_git_repo(
+            repo_url='https://github.com/SilentButeo2/webgrabplus-siteinipack.git',
+            folder_path=f'{settings.BASE_DIR}/temp',
+            root_path=settings.BASE_DIR,
+            destination_folder=f'{settings.BASE_DIR}/.wg++/siteini.pack'
+        )
         return Response(status=status.HTTP_200_OK)
