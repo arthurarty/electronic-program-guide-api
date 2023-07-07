@@ -1,11 +1,12 @@
 """
 Functions we are going to use to create and read the xml files
 """
-from typing import Optional
+import os
 import xml.etree.ElementTree as ET
+from typing import Optional
+
 from common.custom_logging import logger
 from utils.settings import get_setting
-
 
 DEFAULT_XML_STR = """<?xml version="1.0"?>
 <settings>
@@ -33,7 +34,8 @@ def create_config_xml(
     xmltv_id: str,
     channel_name: Optional[str] = None,
     offset: Optional[str] = None,
-    file_path: Optional[str] = '.wg++/WebGrab++.config.xml'
+    file_path: Optional[str] = '.wg++/WebGrab++.config.xml',
+    use_license: bool = False
 ):
     """
     Creates an xml config file for channel to run web_grub against.
@@ -50,9 +52,15 @@ def create_config_xml(
         logger.info('Failed to create config xml')
         raise exception
     logger.info('Using settings -> Timespan: %s, retry: %s', timespan, retry)
-    additional_tags = None
+    additional_tags = ''
     if offset:
         additional_tags = prepare_offset_tag(offset, xmltv_id, channel_name, 2)
+    if use_license:
+        wg_license = f'<license wg-username="{os.environ.get("WG_USERNAME", 0)}" registered-email="{os.environ.get("WG_EMAIL", 0)}" password="{os.environ.get("WG_PASSWORD", 0)}" />'
+        if offset:
+            additional_tags += wg_license
+        else:
+            additional_tags = wg_license
     xml_str = DEFAULT_XML_STR.format(
         site=site,
         site_id=site_id,

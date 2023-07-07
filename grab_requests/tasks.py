@@ -49,7 +49,7 @@ def run_web_grab(
     site_id: str,
     xmltv_id: str,
     channel_name: Optional[str] = None,
-    offset: Optional[str] = None,
+    offset: Optional[str] = None
 ):
     logger.info('First run without offset')
     grab_request: Optional[GrabRequest] = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, None)
@@ -98,6 +98,7 @@ def _run_web_grab(
             xmltv_id,
             channel_name,
             offset,
+            bool(os.environ.get('USE_WB_LICENCE', 0)),
         )
 
         grab_request = GrabRequest.objects.get(id=request_id)
