@@ -10,7 +10,7 @@ from utils.settings import get_setting
 
 DEFAULT_XML_STR = """<?xml version="1.0"?>
 <settings>
-  <filename>{guide_name}_guide.xml</filename>
+  <filename>{guide_name}</filename>
   <mode></mode>
   <postprocess grab="y" run="n">rex</postprocess>
   <user-agent>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 Edg/79.0.309.71</user-agent>

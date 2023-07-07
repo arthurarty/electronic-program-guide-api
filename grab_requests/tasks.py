@@ -91,7 +91,8 @@ def _run_web_grab(
     offset: Optional[str] = None,
 ) -> Optional[GrabRequest]:
     logger.info('Creating Config file for request: %s', request_id)
-    guide_file_name = channel_name.strip().replace(' ', '')
+    guide_file_name = channel_name.strip().replace(' ', '').replace('(', '').replace(')', '')
+    guide_file_name = f'{guide_file_name}_guide.xml'
     logger.info('file name: %s', guide_file_name)
     try:
         create_config_xml(
@@ -105,11 +106,11 @@ def _run_web_grab(
 
         grab_request = GrabRequest.objects.get(id=request_id)
         logger.info('Pulled grab request from db')
-        delete_file(f'.wg++/{guide_file_name}_guide.xml')
+        delete_file(f'.wg++/{guide_file_name}')
         logger.info('Starting webgrab for request: %s: %s', request_id, xmltv_id)
         standard_output, standard_error = func_timeout(120, run_bash_script)
 
-        with open(f'.wg++/{guide_file_name}_guide.xml', 'r') as reader:
+        with open(f'.wg++/{guide_file_name}', 'r') as reader:
             logger.info('Updating webgrab request: %s', request_id)
             xml_tv_guide = reader.read()
             grab_request.result_xml=xml_tv_guide
