@@ -1,15 +1,16 @@
 """
 Functions we are going to use to create and read the xml files
 """
-from typing import Optional
+import os
 import xml.etree.ElementTree as ET
+from typing import Optional
+
 from common.custom_logging import logger
 from utils.settings import get_setting
 
-
 DEFAULT_XML_STR = """<?xml version="1.0"?>
 <settings>
-  <filename>guide.xml</filename>
+  <filename>{guide_name}_guide.xml</filename>
   <mode></mode>
   <postprocess grab="y" run="n">rex</postprocess>
   <user-agent>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 Edg/79.0.309.71</user-agent>
@@ -31,9 +32,10 @@ def create_config_xml(
     site: str,
     site_id: str,
     xmltv_id: str,
+    guide_name: str,
     channel_name: Optional[str] = None,
     offset: Optional[str] = None,
-    file_path: Optional[str] = '.wg++/WebGrab++.config.xml'
+    file_path: Optional[str] = '.wg++/WebGrab++.config.xml',
 ):
     """
     Creates an xml config file for channel to run web_grub against.
@@ -61,8 +63,19 @@ def create_config_xml(
         time_span=timespan,
         retry=retry,
         additional_tags=additional_tags,
+        guide_name=guide_name,
     )
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)
     tree.write(file_path, encoding='utf-8', xml_declaration=True)
     logger.info('Done writing config xml file')
+
+
+def delete_file(file_path: str) -> bool:
+    try:
+        os.remove(file_path)
+        logger.info("File '%s' deleted successfully.", file_path)
+        return True
+    except OSError as raised_error:
+        logger.info("Error occurred while deleting file '%s': %s", file_path, raised_error)
+        return False
