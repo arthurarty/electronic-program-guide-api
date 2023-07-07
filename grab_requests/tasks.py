@@ -77,8 +77,8 @@ def run_bash_script() -> Tuple[str, str]:
 
     standard_output = stdout.decode()
     standard_error = stderr.decode()
-    logger.info("Standard Output:\n %s", standard_output)
-    logger.info("Standard Error:\n %s", standard_error)
+    # logger.info("Standard Output:\n %s", standard_output)
+    # logger.info("Standard Error:\n %s", standard_error)
     return standard_output, standard_error
 
 
