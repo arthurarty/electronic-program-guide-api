@@ -5,8 +5,6 @@ services:
     build: .
     command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker3@%h
     network_mode: "host"
-    volumes:
-      - .:/usr/src/app
   celery_worker_one:
     network_mode: "host"
   celery_worker_two:
