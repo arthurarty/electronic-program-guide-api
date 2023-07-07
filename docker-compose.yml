@@ -11,13 +11,9 @@ services:
   celery_worker_one:
     build: .
     command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker1@%h
-    volumes:
-      - .:/usr/src/app:ro
   celery_worker_two:
     build: .
     command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker2@%h
-    volumes:
-      - .:/usr/src/app:ro
     depends_on:
       celery_worker_one:
         condition: service_started
