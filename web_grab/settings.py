@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOST_STR = os.getenv('ALLOWED_HOSTS')
+ALLOWED_HOST_STR = os.getenv('ALLOWED_HOSTS', '`')
 ALLOWED_HOSTS = [
     'localhost',
 ] + ALLOWED_HOST_STR.split(',')
