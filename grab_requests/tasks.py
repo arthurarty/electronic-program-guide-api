@@ -98,7 +98,7 @@ def _run_web_grab(
             xmltv_id,
             channel_name,
             offset,
-            bool(os.environ.get('USE_WB_LICENCE', 0)),
+            bool(os.environ.get('USE_WB_LICENSE', 0)),
         )
 
         grab_request = GrabRequest.objects.get(id=request_id)
