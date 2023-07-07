@@ -15,7 +15,7 @@ DEFAULT_XML_STR = """<?xml version="1.0"?>
   <postprocess grab="y" run="n">rex</postprocess>
   <user-agent>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 Edg/79.0.309.71</user-agent>
   <logging>on</logging>
-  <retry time-out="5">{retry}</retry>
+  {retry}
   <timespan>{time_span}</timespan>
   <update>f</update>
   <channel site="{site}" site_id="{site_id}" xmltv_id="{xmltv_id}">{site_name}</channel>
@@ -46,7 +46,7 @@ def create_config_xml(
     retry = get_setting('retry')
     try:
         timespan = int(timespan) if timespan else 0
-        retry = int(retry) if retry else 4
+        retry = retry if retry.replace("\\", "") else '<retry time-out="5">3</retry>'
     except ValueError as exception:
         logger.info('Incorrect value for setting of timespan or retry. Expected integers')
         logger.info('Failed to create config xml')
@@ -56,6 +56,7 @@ def create_config_xml(
     if offset:
         additional_tags = prepare_offset_tag(offset, xmltv_id, channel_name, 2)
     if use_license:
+        logger.info('Using the web grab license')
         wg_license = f'<license wg-username="{os.environ.get("WG_USERNAME", 0)}" registered-email="{os.environ.get("WG_EMAIL", 0)}" password="{os.environ.get("WG_PASSWORD", 0)}" />'
         if offset:
             additional_tags += wg_license
