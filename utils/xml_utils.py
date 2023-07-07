@@ -52,7 +52,7 @@ def create_config_xml(
         logger.info('Failed to create config xml')
         raise exception
     logger.info('Using settings -> Timespan: %s, retry: %s', timespan, retry)
-    additional_tags = ''
+    additional_tags = None
     if offset:
         additional_tags = prepare_offset_tag(offset, xmltv_id, channel_name, 2)
     if use_license:
