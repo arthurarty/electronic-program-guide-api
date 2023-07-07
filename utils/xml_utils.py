@@ -35,7 +35,7 @@ def create_config_xml(
     channel_name: Optional[str] = None,
     offset: Optional[str] = None,
     file_path: Optional[str] = '.wg++/WebGrab++.config.xml',
-    use_license: bool = False
+    use_license: bool = False,
 ):
     """
     Creates an xml config file for channel to run web_grub against.
