@@ -74,7 +74,6 @@ def create_config_xml(
         guide_name=guide_name,
     )
     root = ET.fromstring(xml_str)
-    print(xml_str)
     tree = ET.ElementTree(root)
     tree.write(file_path, encoding='utf-8', xml_declaration=True)
     logger.info('Done writing config xml file')
