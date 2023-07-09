@@ -134,3 +134,7 @@ def _run_web_grab(
         grab_request.status = RequestStatusEnum.ERROR.value
         grab_request.result_log='Grabber timed out'
         grab_request.save()
+    finally:
+        logger.info('Clean up config and guide')
+        delete_file(f'.wg++/{guide_file_name}')
+        delete_file('.wg++/WebGrab++.config.xml')
