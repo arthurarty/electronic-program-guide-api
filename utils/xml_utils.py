@@ -44,6 +44,10 @@ def create_config_xml(
         channel_name = xmltv_id
     timespan = get_setting('timespan')
     retry = get_setting('retry')
+    wg_username = get_setting('WG_USERNAME')
+    wg_email = get_setting('WG_EMAIL')
+    wg_password = get_setting('WG_PASSWORD')
+
     try:
         timespan = int(timespan) if timespan else 0
         retry = int(retry) if retry else 4
@@ -52,9 +56,13 @@ def create_config_xml(
         logger.info('Failed to create config xml')
         raise exception
     logger.info('Using settings -> Timespan: %s, retry: %s', timespan, retry)
-    additional_tags = None
+    additional_tags = ''
     if offset:
-        additional_tags = prepare_offset_tag(offset, xmltv_id, channel_name, 2)
+        additional_tags += prepare_offset_tag(offset, xmltv_id, channel_name, 2)
+    if wg_username and wg_email and wg_password:
+        logger.info('Using the web grab license')
+        wg_license = f'<license wg-username="{wg_username}" registered-email="{wg_email}" password="{wg_password}" />'
+        additional_tags += wg_license
     xml_str = DEFAULT_XML_STR.format(
         site=site,
         site_id=site_id,
