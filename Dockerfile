@@ -4,6 +4,7 @@ FROM python:3.10.12
 ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /usr/src/app
 COPY . .
+RUN apt-get clean
 RUN apt-get update -y
 RUN apt-get install -y iputils-ping
 RUN pip install -r requirements.txt
