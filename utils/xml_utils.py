@@ -63,6 +63,8 @@ def create_config_xml(
         logger.info('Using the web grab license')
         wg_license = f'<license wg-username="{wg_username}" registered-email="{wg_email}" password="{wg_password}" />'
         additional_tags += wg_license
+    else:
+        logger.info('Web Grab license is not set.')
     xml_str = DEFAULT_XML_STR.format(
         site=site,
         site_id=site_id,
@@ -75,6 +77,7 @@ def create_config_xml(
     )
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)
+    logger.info('Writing config file %s', file_path)
     tree.write(file_path, encoding='utf-8', xml_declaration=True)
     logger.info('Done writing config xml file')
 
