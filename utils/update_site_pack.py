@@ -28,6 +28,7 @@ def clone_git_repo(repo_url: str, folder_path: str, root_path: str, destination_
 def copy_and_replace_folder(source_folder: str, destination_folder: str):
     if os.path.exists(destination_folder):
         # If the destination folder already exists, delete it first
+        logger.info('Deleting the old siteini.pack')
         shutil.rmtree(destination_folder)
 
     # Copy the entire source folder to the destination folder
