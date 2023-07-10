@@ -15,7 +15,7 @@ DEFAULT_XML_STR = """<?xml version="1.0"?>
   <postprocess grab="y" run="n">rex</postprocess>
   <user-agent>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36 Edg/79.0.309.71</user-agent>
   <logging>on</logging>
-  <retry time-out="5">{retry}</retry>
+  {retry}
   <timespan>{time_span}</timespan>
   <update>f</update>
   <channel site="{site}" site_id="{site_id}" xmltv_id="{xmltv_id}">{site_name}</channel>
@@ -50,7 +50,7 @@ def create_config_xml(
 
     try:
         timespan = int(timespan) if timespan else 0
-        retry = int(retry) if retry else 4
+        retry = retry if retry.replace("\\", "") else '<retry time-out="5">3</retry>'
     except ValueError as exception:
         logger.info('Incorrect value for setting of timespan or retry. Expected integers')
         logger.info('Failed to create config xml')
