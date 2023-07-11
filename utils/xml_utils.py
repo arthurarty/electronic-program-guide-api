@@ -7,6 +7,8 @@ from typing import Optional
 
 from common.custom_logging import logger
 from utils.settings import get_setting
+from xml.sax.saxutils import escape
+
 
 DEFAULT_XML_STR = """<?xml version="1.0"?>
 <settings>
@@ -47,7 +49,6 @@ def create_config_xml(
     wg_username = get_setting('WG_USERNAME')
     wg_email = get_setting('WG_EMAIL')
     wg_password = get_setting('WG_PASSWORD')
-
     try:
         timespan = int(timespan) if timespan else 0
         retry = retry if retry.replace("\\", "") else '<retry time-out="5">3</retry>'
@@ -66,14 +67,14 @@ def create_config_xml(
     else:
         logger.info('Web Grab license is not set.')
     xml_str = DEFAULT_XML_STR.format(
-        site=site,
-        site_id=site_id,
-        xmltv_id=xmltv_id,
-        site_name=channel_name,
+        site=escape(site) if site else None,
+        site_id=escape(site_id) if site_id else None,
+        xmltv_id=escape(xmltv_id) if xmltv_id else None,
+        site_name=escape(channel_name) if channel_name else None,
         time_span=timespan,
         retry=retry,
         additional_tags=additional_tags,
-        guide_name=guide_name,
+        guide_name=escape(guide_name) if guide_name else None,
     )
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)
