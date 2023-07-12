@@ -2,12 +2,13 @@ import os
 import subprocess
 import xml.etree.ElementTree as ET
 from typing import Optional, Tuple
+from xml.sax.saxutils import escape
 
 import requests
-from requests import Response
 from celery import shared_task
 from dotenv import load_dotenv
 from func_timeout import FunctionTimedOut, func_timeout
+from requests import Response
 from rest_framework import serializers
 
 from common.custom_logging import logger
@@ -97,6 +98,7 @@ def _run_web_grab(
 ) -> Optional[GrabRequest]:
     logger.info('Creating Config file for request: %s', request_id)
     guide_file_name = channel_name.strip().replace(' ', '').replace('(', '').replace(')', '')
+    guide_file_name = escape(guide_file_name)
     guide_file_name = f'{guide_file_name}_guide.xml'
     logger.info('file name: %s', guide_file_name)
     grab_request = GrabRequest.objects.get(id=request_id)
