@@ -15,7 +15,12 @@ from common.custom_logging import logger
 from grab_requests.models import GrabRequest, RequestStatusEnum
 from utils.xml_utils import create_config_xml, delete_file
 
+
+DEFAULT_TIMEOUT = 120
+
+
 load_dotenv()
+
 
 
 class Serializer(serializers.ModelSerializer):
@@ -56,13 +61,15 @@ def run_web_grab(
     xmltv_id: str,
     channel_name: Optional[str] = None,
     offset: Optional[str] = None,
+    timeout: Optional[int] = None,
 ):
     logger.info('First run without offset')
-    grab_request: Optional[GrabRequest] = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, None)
+    timeout = timeout if timeout else DEFAULT_TIMEOUT
+    grab_request: Optional[GrabRequest] = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, None, timeout)
     if offset:
         # if offset is set, we need to run the grabber twice. First time to pick icon
         logger.info('Running with offset set.')
-        grab_request = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, offset)
+        grab_request = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, offset, timeout)
     resp = send_call_back(grab_request)
     logger.info(resp.status_code)
     logger.info(resp.text)
@@ -95,6 +102,7 @@ def _run_web_grab(
     xmltv_id: str,
     channel_name: Optional[str] = None,
     offset: Optional[str] = None,
+    timeout: Optional[int] = DEFAULT_TIMEOUT,
 ) -> Optional[GrabRequest]:
     logger.info('Creating Config file for request: %s', request_id)
     guide_file_name = channel_name.strip().replace(' ', '').replace('(', '').replace(')', '')
@@ -118,10 +126,13 @@ def _run_web_grab(
         )
 
         delete_file(f'.wg++/{guide_file_name}')
-        logger.info('Starting webgrab for request: %s: %s', request_id, xmltv_id)
+        logger.info(
+            'Starting webgrab for request: %s: %s, Timeout set to: %s',
+            request_id, xmltv_id, timeout
+        )
 
         # running the bash script can hang, so we are using a timeout to exit
-        standard_output, standard_error = func_timeout(120, run_bash_script)
+        standard_output, standard_error = func_timeout(timeout, run_bash_script)
 
         logger.info('Updating webgrab request: %s', request_id)
         with open(f'.wg++/{guide_file_name}', 'r') as reader:
