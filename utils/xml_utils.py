@@ -44,6 +44,10 @@ def create_config_xml(
     """
     if not channel_name:
         channel_name = xmltv_id
+    site=escape(site) if site else None
+    site_id=escape(site_id) if site_id else None
+    xmltv_id=escape(xmltv_id) if xmltv_id else None
+    channel_name=escape(channel_name) if channel_name else None
     timespan = get_setting('timespan')
     retry = get_setting('retry')
     wg_username = get_setting('WG_USERNAME')
@@ -67,14 +71,14 @@ def create_config_xml(
     else:
         logger.info('Web Grab license is not set.')
     xml_str = DEFAULT_XML_STR.format(
-        site=escape(site) if site else None,
-        site_id=escape(site_id) if site_id else None,
-        xmltv_id=escape(xmltv_id) if xmltv_id else None,
-        site_name=escape(channel_name) if channel_name else None,
+        site=site,
+        site_id=site_id,
+        xmltv_id=xmltv_id,
+        site_name=channel_name,
         time_span=timespan,
         retry=retry,
         additional_tags=additional_tags,
-        guide_name=escape(guide_name) if guide_name else None,
+        guide_name=guide_name,
     )
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)

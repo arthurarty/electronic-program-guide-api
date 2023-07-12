@@ -4,16 +4,15 @@ import xml.etree.ElementTree as ET
 from typing import Optional, Tuple
 
 import requests
+from requests import Response
 from celery import shared_task
 from dotenv import load_dotenv
+from func_timeout import FunctionTimedOut, func_timeout
 from rest_framework import serializers
 
 from common.custom_logging import logger
 from grab_requests.models import GrabRequest, RequestStatusEnum
 from utils.xml_utils import create_config_xml, delete_file
-from func_timeout import func_timeout, FunctionTimedOut
-
-
 
 load_dotenv()
 
@@ -24,7 +23,11 @@ class Serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-def send_call_back(grab_request: GrabRequest):
+def send_call_back(grab_request: GrabRequest) -> Response:
+    """
+    Send post request to the defined CALL_BACK_URL containing the results
+    of a grab_request.
+    """
     call_back_url = os.environ.get('CALL_BACK_URL')
     logger.info('Sending data to call_back_url %s', call_back_url)
     serializer = Serializer(grab_request)
@@ -37,6 +40,8 @@ def get_icon_tag(xml_str: str) -> str:
     channel_tags = root.findall('.//channel')
     for channel_tag in channel_tags:
         icon_tag = channel_tag.find('icon')
+        # checking if icon_tag: returns False much as icon tag is set
+        # so instead we check the type as a work around
         if type(icon_tag) == type(channel_tag):
             return ET.tostring(icon_tag)
     return None
@@ -112,6 +117,8 @@ def _run_web_grab(
 
         delete_file(f'.wg++/{guide_file_name}')
         logger.info('Starting webgrab for request: %s: %s', request_id, xmltv_id)
+
+        # running the bash script can hang, so we are using a timeout to exit
         standard_output, standard_error = func_timeout(120, run_bash_script)
 
         logger.info('Updating webgrab request: %s', request_id)
