@@ -79,6 +79,7 @@ def run_bash_script() -> Tuple[str, str]:
     """
     Using a bash script to trigger the grab.
     """
+    # Suggestion: This can be written simpler using subprocess.run as opposed to subprocess.Popen
     script_path = '.wg++/run.sh'
     process = subprocess.Popen(
         ['bash', script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE
