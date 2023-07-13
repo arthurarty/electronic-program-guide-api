@@ -8,7 +8,6 @@ import requests
 from celery import shared_task
 from dotenv import load_dotenv
 from func_timeout import FunctionTimedOut, func_timeout
-from requests import Response
 from rest_framework import serializers
 
 from common.custom_logging import logger
@@ -29,7 +28,7 @@ class Serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-def send_call_back(grab_request: GrabRequest) -> Response:
+def send_call_back(grab_request: GrabRequest) -> requests.Response:
     """
     Send post request to the defined CALL_BACK_URL containing the results
     of a grab_request.
