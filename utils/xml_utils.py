@@ -80,7 +80,6 @@ def create_config_xml(
         additional_tags=additional_tags,
         guide_name=guide_name,
     )
-    print(xml_str)
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)
     logger.info('Writing config file %s', file_path)
