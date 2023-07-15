@@ -26,6 +26,15 @@ DEFAULT_XML_STR = """<?xml version="1.0"?>
 """
 
 
+def create_file_name(input_str: str) -> str:
+    """
+    We remove all special characters when naming the file
+    """
+    file_name = ''.join(single_character for single_character in input_str if single_character.isalnum())
+    file_name = file_name.strip()
+    return file_name
+
+
 def prepare_offset_tag(offset: str, xmltv_id: str, site_name: str, suffix_int: int) -> str:
     return f'<channel offset="{offset}" same_as="{xmltv_id}" xmltv_id="{xmltv_id}_{suffix_int}">{site_name}</channel>'
 

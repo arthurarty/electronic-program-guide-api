@@ -12,7 +12,7 @@ from rest_framework import serializers
 
 from common.custom_logging import logger
 from grab_requests.models import GrabRequest, RequestStatusEnum
-from utils.xml_utils import create_config_xml, delete_file
+from utils.xml_utils import create_config_xml, delete_file, create_file_name
 
 
 DEFAULT_TIMEOUT = 120
@@ -105,7 +105,7 @@ def _run_web_grab(
     timeout: Optional[int] = DEFAULT_TIMEOUT,
 ) -> Optional[GrabRequest]:
     logger.info('Creating Config file for request: %s', request_id)
-    guide_file_name = channel_name.strip().replace(' ', '').replace('(', '').replace(')', '')
+    guide_file_name = create_file_name(channel_name) if channel_name else ''
     guide_file_name = escape(guide_file_name)
     guide_file_name = f'{guide_file_name}_guide.xml'
     logger.info('file name: %s', guide_file_name)
@@ -137,6 +137,8 @@ def _run_web_grab(
         logger.info('Updating webgrab request: %s', request_id)
         with open(f'.wg++/{guide_file_name}', 'r') as reader:
             xml_tv_guide = reader.read()
+            if len(xml_tv_guide) > 1:
+                logger.info('We did not get a tv guide')
             grab_request.result_xml=xml_tv_guide
             grab_request.status = RequestStatusEnum.COMPLETE.value
             grab_request.result_log=f'{str(standard_output)} \n {str(standard_error)}'
