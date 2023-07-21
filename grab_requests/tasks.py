@@ -137,8 +137,8 @@ def _run_web_grab(
         logger.info('Updating webgrab request: %s', request_id)
         with open(f'.wg++/{guide_file_name}', 'r') as reader:
             xml_tv_guide = reader.read()
-            print(xml_tv_guide)
-            if len(xml_tv_guide) > 1:
+            # print(xml_tv_guide)
+            if len(xml_tv_guide) < 1:
                 logger.info('We did not get a tv guide')
             grab_request.result_xml=xml_tv_guide
             grab_request.status = RequestStatusEnum.COMPLETE.value
