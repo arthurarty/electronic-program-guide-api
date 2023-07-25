@@ -76,6 +76,10 @@ We have each celery worker running as a container, this is because of how WebGra
 4. Check the status of the celery workers.
     - First get into the web container. `docker compose exec web bash`
     - Check the workers. `celery -A web_grab inspect active` where `web_grab` is the name of the project. See celery [docs](https://docs.celeryq.dev/en/stable/userguide/monitoring.html)
+5. Reading all docker logs
+    -  `docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --follow`
+    - See docs on docker compose logs [here](https://docs.docker.com/engine/reference/commandline/compose_logs/)
+
 ### Tutorial on how to use Django and Celery.
 - [Real python tutorial](https://realpython.com/asynchronous-tasks-with-django-and-celery/#handle-workloads-asynchronously-with-celery)
 
