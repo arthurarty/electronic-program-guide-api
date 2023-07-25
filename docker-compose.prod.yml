@@ -9,3 +9,11 @@ services:
     network_mode: "host"
   celery_worker_two:
     network_mode: "host"
+  celery_worker_four:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker4@%h
+    network_mode: "host"
+  celery_worker_five:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker5@%h
+    network_mode: "host"
