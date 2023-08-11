@@ -79,7 +79,8 @@ We have each celery worker running as a container, this is because of how WebGra
 5. Reading all docker logs
     -  `docker compose -f docker-compose.yml -f docker-compose.prod.yml logs --follow`
     - See docs on docker compose logs [here](https://docs.docker.com/engine/reference/commandline/compose_logs/)
+6. Creating an API Key.
+    - log in as a superuser and create an API key using the admin dashboard.
 
 ### Tutorial on how to use Django and Celery.
 - [Real python tutorial](https://realpython.com/asynchronous-tasks-with-django-and-celery/#handle-workloads-asynchronously-with-celery)
-
