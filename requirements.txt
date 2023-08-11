@@ -16,6 +16,7 @@ Django==4.2.1
 django-filter==23.2
 django-rest-swagger==2.2.0
 djangorestframework==3.14.0
+djangorestframework-api-key==2.3.0
 drf-spectacular==0.26.2
 func-timeout==4.3.5
 idna==3.4
