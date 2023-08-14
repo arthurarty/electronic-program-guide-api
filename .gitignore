@@ -35,5 +35,6 @@ robots/
 .DS_Store
 /temp
 /.wg++/siteini.pack
+.wg++/siteini.user/*
 .wg++/hot_cookies.txt
 .wg++/WebGrab++.test_config.xml
