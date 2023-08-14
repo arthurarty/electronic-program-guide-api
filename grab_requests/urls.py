@@ -15,12 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 
 from grab_requests.views import (GrabRequestBulkCreateView,
                                  GrabRequestDetailView, GrabRequestListView,
                                  GrabSettingDetailView, GrabSettingListView,
-                                 UpdateSitePack)
+                                 UpdateSitePack, FileUploadView)
 
 urlpatterns = [
     path('', GrabRequestListView.as_view(), name='home'),
@@ -30,4 +30,5 @@ urlpatterns = [
     path('settings/<int:pk>/', GrabSettingDetailView.as_view(), name='grab_settings_update'),
     path('update-site-pack', UpdateSitePack.as_view(), name='update_site_pack'),
     path('admin/', admin.site.urls),
+    re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
 ]

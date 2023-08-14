@@ -1,14 +1,18 @@
 from django.conf import settings
 from rest_framework import generics, status
+from rest_framework.parsers import FileUploadParser
 from rest_framework.request import HttpRequest
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.custom_logging import logger
 from grab_requests.models import GrabRequest, GrabSetting
 from grab_requests.serializers import (GrabRequestSerializer,
                                        GrabSettingSerializer)
 from utils.update_site_pack import clone_git_repo
+from common.custom_logging import logger
+import shutil
+import io
+from django.core.files.storage import FileSystemStorage
 
 
 class GrabRequestListView(generics.ListCreateAPIView):
@@ -53,4 +57,21 @@ class UpdateSitePack(APIView):
             root_path=settings.BASE_DIR,
             destination_folder=f'{settings.BASE_DIR}/.wg++/siteini.pack'
         )
-        return Response(status=status.HTTP_200_OK)
+        return Response('Request to update received', status=status.HTTP_200_OK)
+
+
+class FileUploadView(APIView):
+    """
+    Class to handle uploading of custom .ini files.
+    """
+    parser_classes = [FileUploadParser]
+
+    def post(self, request: HttpRequest, filename: str, format=None) -> Response:
+        accepted_file_paths = ('.ini', '.xml')
+        if not filename.endswith(accepted_file_paths):
+            logger.info('File uploaded has unacceptable file extension')
+            return Response('Invalid file type.', status=status.HTTP_400_BAD_REQUEST)
+        file_obj = request.data['file']
+        destination_path = f'{settings.BASE_DIR}/.wg++/siteini.user'
+        FileSystemStorage(location=destination_path).save(filename, file_obj)
+        return Response('Custom ini received.', status=status.HTTP_201_CREATED)

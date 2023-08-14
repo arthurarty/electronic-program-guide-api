@@ -82,5 +82,13 @@ We have each celery worker running as a container, this is because of how WebGra
 6. Creating an API Key.
     - log in as a superuser and create an API key using the admin dashboard.
 
+## API Endpoints exposed:
+|Endpoint |Functionality |Note |
+|---------|:------------:|:---:|
+|`POST` /upload/<file_name> |Upload custom ini file.| Needs to be `.xml` or `.ini` |
+|`GET` /docker-down |Docker compose down | Brings down the docker containers. |
+| `GET` /docker-status/ | List containers running. | Shows which containers are running.|
+
+
 ### Tutorial on how to use Django and Celery.
 - [Real python tutorial](https://realpython.com/asynchronous-tasks-with-django-and-celery/#handle-workloads-asynchronously-with-celery)
