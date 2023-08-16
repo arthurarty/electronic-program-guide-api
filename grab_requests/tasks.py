@@ -70,6 +70,9 @@ def run_web_grab(
         logger.info('Running with offset set.')
         grab_request = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, offset, timeout)
     resp = send_call_back(grab_request)
+    if grab_request:
+        logger.info('Delete grab request %s}', grab_request.id)
+        grab_request.delete()
     logger.info(resp.status_code)
     logger.info(resp.text)
 
