@@ -1,0 +1,35 @@
+services:
+  web:
+    network_mode: "host"
+  celery_worker_three:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker3@%h
+    network_mode: "host"
+  celery_worker_one:
+    network_mode: "host"
+  celery_worker_two:
+    network_mode: "host"
+  celery_worker_four:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker4@%h
+    network_mode: "host"
+  celery_worker_five:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker5@%h
+    network_mode: "host"
+  celery_worker_six:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker6@%h
+    network_mode: "host"
+  celery_worker_seven:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker7@%h
+    network_mode: "host"
+  celery_worker_eight:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker8@%h
+    network_mode: "host"
+  celery_worker_nine:
+    build: .
+    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker9@%h
+    network_mode: "host"
