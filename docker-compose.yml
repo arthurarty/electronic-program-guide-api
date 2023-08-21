@@ -8,12 +8,3 @@ services:
       - "8000:8000"
     extra_hosts:
       - "host.docker.internal:host-gateway"
-  celery_worker_one:
-    build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker1@%h
-  celery_worker_two:
-    build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker2@%h
-    depends_on:
-      celery_worker_one:
-        condition: service_started
