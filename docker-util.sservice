@@ -1,0 +1,9 @@
+[Unit]
+Description=Docker utils service
+After=multi-user.target
+[Service]
+Type=simple
+Restart=always
+ExecStart=/root/docker-utils-api/venv/bin/python3 /root/docker-utils-api/run.py
+[Install]
+WantedBy=multi-user.target
