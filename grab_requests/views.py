@@ -9,8 +9,8 @@ from rest_framework.views import APIView
 from common.custom_logging import logger
 from grab_requests.models import GrabRequest, GrabSetting
 from grab_requests.serializers import (GrabRequestSerializer,
-                                       GrabSettingSerializer)
-from utils.files import list_files_in_directory
+                                       GrabSettingSerializer, FileNameSerializer)
+from utils.files import list_files_in_directory, delete_file_if_exists
 from utils.update_site_pack import clone_git_repo
 
 
@@ -94,8 +94,14 @@ class ListCustomIni(APIView):
         )
 
 
-    def post(self, request: HttpRequest, filename: str) -> Response:
+class DeleteCustomIni(APIView):
+    def post(self, request: HttpRequest) -> Response:
         """
         Handles deleting the file.
         """
-        pass
+        serializer = FileNameSerializer(data=request.data, many=False)
+        if serializer.is_valid():
+            file_name = serializer.data['file_name']
+            file_to_delete = f'{settings.BASE_DIR}/.wg++/siteini.user/{file_name}'
+            return delete_file_if_exists(file_to_delete)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

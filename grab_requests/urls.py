@@ -17,10 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 
-from grab_requests.views import (GrabRequestBulkCreateView,
+from grab_requests.views import (DeleteCustomIni, FileUploadView,
+                                 GrabRequestBulkCreateView,
                                  GrabRequestDetailView, GrabRequestListView,
                                  GrabSettingDetailView, GrabSettingListView,
-                                 UpdateSitePack, FileUploadView, ListCustomIni)
+                                 ListCustomIni, UpdateSitePack)
 
 urlpatterns = [
     path('', GrabRequestListView.as_view(), name='home'),
@@ -31,5 +32,6 @@ urlpatterns = [
     path('update-site-pack', UpdateSitePack.as_view(), name='update_site_pack'),
     path('admin/', admin.site.urls),
     re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
-    path('list-custom-ini', ListCustomIni.as_view(), name='custom_ini'),
+    path('custom-ini', ListCustomIni.as_view(), name='custom_ini'),
+    path('custom-ini/delete', DeleteCustomIni.as_view(), name='custom_ini_delete'),
 ]
