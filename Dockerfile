@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1 
-FROM python:3.10.12
+FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /usr/src/app
@@ -7,6 +7,9 @@ COPY . .
 RUN apt-get clean
 RUN apt-get update -y
 RUN apt-get install -y iputils-ping
-RUN pip install -r requirements.txt
-RUN echo "1" | apt-get install  -yq mono-complete
+RUN apt-get install -yq dotnet-sdk-7.0
+RUN apt-get install -yq ca-certificates && update-ca-certificates
+RUN apt-get install -yq python3-pip
+RUN pip3 install -r requirements.txt
+RUN apt install -y git
 RUN .wg++/install.sh

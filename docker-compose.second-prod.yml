@@ -3,29 +3,29 @@ services:
     network_mode: "host"
   celery_worker_six:
     build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker6@%h
+    command: python3 -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker6@%h
     network_mode: "host"
   celery_worker_seven:
     build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker7@%h
+    command: python3 -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker7@%h
     network_mode: "host"
   celery_worker_eight:
     build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker8@%h
+    command: python3 -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker8@%h
     network_mode: "host"
   celery_worker_nine:
     build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker9@%h
+    command: python3 -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker9@%h
     network_mode: "host"
   celery_worker_ten:
     build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker10@%h
+    command: python3 -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker10@%h
     network_mode: "host"
   celery_worker_eleven:
     build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker11@%h
+    command: python3 -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker11@%h
     network_mode: "host"
   celery_worker_twelve:
     build: .
-    command: python -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker12@%h
+    command: python3 -m celery -A web_grab worker -l info --loglevel=INFO --concurrency=1 -n worker12@%h
     network_mode: "host"
