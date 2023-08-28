@@ -1,18 +1,17 @@
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 from rest_framework import generics, status
 from rest_framework.parsers import FileUploadParser
 from rest_framework.request import HttpRequest
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from common.custom_logging import logger
 from grab_requests.models import GrabRequest, GrabSetting
 from grab_requests.serializers import (GrabRequestSerializer,
                                        GrabSettingSerializer)
+from utils.files import list_files_in_directory
 from utils.update_site_pack import clone_git_repo
-from common.custom_logging import logger
-import shutil
-import io
-from django.core.files.storage import FileSystemStorage
 
 
 class GrabRequestListView(generics.ListCreateAPIView):
@@ -75,3 +74,28 @@ class FileUploadView(APIView):
         destination_path = f'{settings.BASE_DIR}/.wg++/siteini.user'
         FileSystemStorage(location=destination_path).save(filename, file_obj)
         return Response('Custom ini received.', status=status.HTTP_201_CREATED)
+
+
+class ListCustomIni(APIView):
+    """
+    List all files uploaded to the folder 'siteini.user'.
+    """
+    def get(self, request: HttpRequest):
+        """
+        Returns a list of the files present.
+        """
+        directory_path = f'{settings.BASE_DIR}/.wg++/siteini.user'
+        file_list = list_files_in_directory(directory_path)
+        return Response(
+            {
+                'files': file_list
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+    def post(self, request: HttpRequest, filename: str) -> Response:
+        """
+        Handles deleting the file.
+        """
+        pass

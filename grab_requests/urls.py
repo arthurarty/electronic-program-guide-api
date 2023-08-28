@@ -20,7 +20,7 @@ from django.urls import path, re_path
 from grab_requests.views import (GrabRequestBulkCreateView,
                                  GrabRequestDetailView, GrabRequestListView,
                                  GrabSettingDetailView, GrabSettingListView,
-                                 UpdateSitePack, FileUploadView)
+                                 UpdateSitePack, FileUploadView, ListCustomIni)
 
 urlpatterns = [
     path('', GrabRequestListView.as_view(), name='home'),
@@ -31,4 +31,5 @@ urlpatterns = [
     path('update-site-pack', UpdateSitePack.as_view(), name='update_site_pack'),
     path('admin/', admin.site.urls),
     re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
+    path('list-custom-ini', ListCustomIni.as_view(), name='custom_ini'),
 ]
