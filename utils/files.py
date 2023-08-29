@@ -3,10 +3,7 @@ import os
 from rest_framework.response import Response
 from rest_framework import status
 import requests
-import logging
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger()
+from common.custom_logging import logger
 
 
 def list_files_in_directory(directory_path: str) -> List[str]:
