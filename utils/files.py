@@ -2,6 +2,11 @@ from typing import List
 import os
 from rest_framework.response import Response
 from rest_framework import status
+import requests
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger()
 
 
 def list_files_in_directory(directory_path: str) -> List[str]:
@@ -34,3 +39,19 @@ def delete_file_if_exists(file_name: str) -> Response:
         msg = f"File '{file_name}' does not exist."
         resp_status = status.HTTP_404_NOT_FOUND
     return Response({'msg': msg}, status=resp_status)
+
+
+def download_file(download_url: str, save_path: str) -> bool:
+    """
+    Download file from the internet.
+    """
+    try:
+        response = requests.get(download_url, timeout=2000)
+        response.raise_for_status()  # Raise an exception if the request was not successful
+        with open(save_path, 'wb') as file:
+            file.write(response.content)
+        logger.info("File downloaded and saved as %s", save_path)
+        return True
+    except requests.exceptions.RequestException as exception_raised:
+        logger.info("Error downloading the file: %s", exception_raised)
+    return False
