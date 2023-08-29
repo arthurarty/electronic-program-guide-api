@@ -1,3 +1,6 @@
+import xml.etree.ElementTree as ET
+from urllib.parse import urlparse
+
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from rest_framework import generics, status
@@ -8,10 +11,15 @@ from rest_framework.views import APIView
 
 from common.custom_logging import logger
 from grab_requests.models import GrabRequest, GrabSetting
-from grab_requests.serializers import (GrabRequestSerializer,
-                                       GrabSettingSerializer, FileNameSerializer)
-from utils.files import list_files_in_directory, delete_file_if_exists
+from grab_requests.serializers import (ExternalTvGuideSerializer,
+                                       FileNameSerializer,
+                                       GrabRequestSerializer,
+                                       GrabSettingSerializer)
+from utils.files import (delete_file_if_exists, download_file,
+                         list_files_in_directory)
 from utils.update_site_pack import clone_git_repo
+from utils.xml_utils import parse_xml_file, delete_file
+from grab_requests.tasks import send_xml_guide
 
 
 class GrabRequestListView(generics.ListCreateAPIView):
@@ -105,3 +113,55 @@ class DeleteCustomIni(APIView):
             file_to_delete = f'{settings.BASE_DIR}/.wg++/siteini.user/{file_name}'
             return delete_file_if_exists(file_to_delete)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ExternalTvGuides(APIView):
+    """
+    Handles downloading external tv guide xml
+    parsing it and kicking off tasks to handle it.
+    """
+    def post(self, request: HttpRequest) -> Response:
+        # TODO: This function should be async because it takes at least 30 secs
+        serializer = ExternalTvGuideSerializer(data=request.data, many=False)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        download_url = serializer.data['download_url']
+        external_id = serializer.data['external_id']
+        parsed_url = urlparse(download_url)
+        file_name = parsed_url.path
+        file_name = file_name.replace('/', '')
+        was_downloaded = download_file(download_url, file_name)
+        if was_downloaded:
+            xml_root = parse_xml_file(file_name)
+            delete_file(file_name)
+            return handle_channels_from_xml(xml_root, external_id) if xml_root else Response(
+                {'msg': 'Failed to parse channels'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+        return Response(
+            {'msg': 'Failed to download'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+def handle_channels_from_xml(root: ET, external_id: str) -> Response:
+    """
+    Extract channels and program guides from xml
+    And start async tasks to be handled by workers.
+    """
+    channels = root.findall('.//channel')
+    for channel in channels:
+        channel_root = ET.fromstring(
+            "<tv generator-info-name=\"none\" generator-info-url=\"none\">\n"+"</tv>"
+        )
+        channel_name = channel.find('display-name')
+        channel_name = channel_name.text
+        channel_id = channel.attrib['id']
+        channel_root.append(channel)
+        predicate = './/programme[@channel="'+channel_id+'"]'
+        programmes = root.findall(predicate)
+        for programme in programmes:
+            channel_root.append(programme)
+        xml_contents = ET.tostring(channel_root, encoding='unicode')
+        # send_xml_guide will be broadcast to the workers to be handled async
+        send_xml_guide.delay(external_id, xml_contents)
+    logger.info('Done Handling external tv guide')
+    return Response({'msg': 'Done handling tv guide'}, status=status.HTTP_200_OK)

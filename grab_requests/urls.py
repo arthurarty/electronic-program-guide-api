@@ -17,8 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 
-from grab_requests.views import (DeleteCustomIni, FileUploadView,
-                                 GrabRequestBulkCreateView,
+from grab_requests.views import (DeleteCustomIni, ExternalTvGuides,
+                                 FileUploadView, GrabRequestBulkCreateView,
                                  GrabRequestDetailView, GrabRequestListView,
                                  GrabSettingDetailView, GrabSettingListView,
                                  ListCustomIni, UpdateSitePack)
@@ -34,4 +34,5 @@ urlpatterns = [
     re_path(r'^upload/(?P<filename>[^/]+)$', FileUploadView.as_view()),
     path('custom-ini', ListCustomIni.as_view(), name='custom_ini'),
     path('custom-ini/delete', DeleteCustomIni.as_view(), name='custom_ini_delete'),
+    path('external-guide', ExternalTvGuides.as_view(), name='external_guide'),
 ]

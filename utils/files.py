@@ -42,6 +42,7 @@ def download_file(download_url: str, save_path: str) -> bool:
     """
     Download file from the internet.
     """
+    logger.info('Starting download of file %s', download_url)
     try:
         response = requests.get(download_url, timeout=2000)
         response.raise_for_status()  # Raise an exception if the request was not successful

@@ -59,3 +59,8 @@ class GrabSettingSerializer(serializers.ModelSerializer):
 
 class FileNameSerializer(serializers.Serializer):
     file_name = serializers.CharField(max_length=255)
+
+
+class ExternalTvGuideSerializer(serializers.Serializer):
+    download_url = serializers.CharField(max_length=255)
+    external_id = serializers.CharField(max_length=255)

@@ -3,11 +3,13 @@ Functions we are going to use to create and read the xml files
 """
 import os
 import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import Element
 from typing import Optional
 
 from common.custom_logging import logger
 from utils.settings import get_setting
 from xml.sax.saxutils import escape
+import gzip
 
 
 DEFAULT_XML_STR = """<?xml version="1.0"?>
@@ -89,7 +91,6 @@ def create_config_xml(
         additional_tags=additional_tags,
         guide_name=guide_name,
     )
-    print(xml_str)
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)
     logger.info('Writing config file %s', file_path)
@@ -105,3 +106,21 @@ def delete_file(file_path: str) -> bool:
     except OSError as raised_error:
         logger.info("Error occurred while deleting file '%s': %s", file_path, raised_error)
         return False
+
+
+def parse_xml_file(file_name: str) -> Optional[Element]:
+    """
+    Read all the channels in an xml dump and return the root.
+    """
+    try:
+        if file_name.endswith('.xml'):
+            with open(file_name, 'r', encoding='utf-8') as file:
+                return ET.fromstring(file.read())
+        elif file_name.endswith('.gz'):
+            with gzip.open(file_name, 'rb') as gz_file:
+                xml_content = gz_file.read()
+            root = ET.fromstring(xml_content.decode('utf-8'))
+            return root
+    except Exception as exception_raised:
+        logger.info("Failed to parse file %s due to %s", file_name, exception_raised)
+        return None

@@ -169,3 +169,16 @@ def _run_web_grab(
         logger.info('Clean up config and guide')
         delete_file(f'.wg++/{guide_file_name}')
         delete_file('.wg++/WebGrab++.config.xml')
+
+
+@shared_task()
+def send_xml_guide(external_id: str, xml_content: str) -> None:
+    """
+    A distributed task to handle sending tv guides to odoo.
+    """
+    call_back_url = os.environ.get('TV_GUIDE_CALL_BACK')
+    logger.info('Sending data to call_back_url %s', call_back_url)
+    data = {'xml_content': xml_content}
+    request = requests.post(call_back_url, json=data, timeout=60)
+    logger.info('Response %s', request.status_code)
+    return
