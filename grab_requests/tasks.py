@@ -178,7 +178,7 @@ def send_xml_guide(external_id: str, xml_content: str) -> None:
     """
     call_back_url = os.environ.get('TV_GUIDE_CALL_BACK')
     logger.info('Sending data to call_back_url %s', call_back_url)
-    data = {'xml_content': xml_content}
+    data = {'xml_content': xml_content, 'external_id': external_id}
     request = requests.post(call_back_url, json=data, timeout=60)
     logger.info('Response %s', request.status_code)
     return
