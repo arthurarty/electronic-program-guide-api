@@ -15,7 +15,7 @@ from grab_requests.models import GrabRequest, RequestStatusEnum
 from utils.xml_utils import create_config_xml, delete_file, create_file_name
 
 
-DEFAULT_TIMEOUT = 600
+DEFAULT_TIMEOUT = 120
 
 
 load_dotenv()
@@ -28,7 +28,7 @@ class Serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-def send_call_back(grab_request: GrabRequest) -> requests.Response:
+def send_call_back(grab_request: GrabRequest, timeout: int = 180) -> requests.Response:
     """
     Send post request to the defined CALL_BACK_URL containing the results
     of a grab_request.
@@ -36,7 +36,7 @@ def send_call_back(grab_request: GrabRequest) -> requests.Response:
     call_back_url = os.environ.get('CALL_BACK_URL')
     logger.info('Sending data to call_back_url %s', call_back_url)
     serializer = Serializer(grab_request)
-    return requests.post(call_back_url, json=serializer.data, timeout=DEFAULT_TIMEOUT)
+    return requests.post(call_back_url, json=serializer.data, timeout=timeout)
 
 
 def get_icon_tag(xml_str: str) -> str:
@@ -69,7 +69,7 @@ def run_web_grab(
         # if offset is set, we need to run the grabber twice. First time to pick icon
         logger.info('Running with offset set.')
         grab_request = _run_web_grab(request_id, site, site_id, xmltv_id, channel_name, offset, timeout)
-    resp = send_call_back(grab_request)
+    resp = send_call_back(grab_request, timeout)
     if grab_request:
         logger.info('Delete grab request %s}', grab_request.id)
         grab_request.delete()
@@ -172,13 +172,13 @@ def _run_web_grab(
 
 
 @shared_task()
-def send_xml_guide(external_id: str, xml_content: str) -> None:
+def send_xml_guide(external_id: str, xml_content: str, timeout: int = DEFAULT_TIMEOUT) -> None:
     """
     A distributed task to handle sending tv guides to odoo.
     """
     call_back_url = os.environ.get('TV_GUIDE_CALL_BACK')
     logger.info('Sending data to call_back_url %s', call_back_url)
     data = {'xml_content': xml_content, 'external_id': external_id}
-    request = requests.post(call_back_url, json=data, timeout=DEFAULT_TIMEOUT)
+    request = requests.post(call_back_url, json=data, timeout=timeout)
     logger.info('Response %s', request.status_code)
     return

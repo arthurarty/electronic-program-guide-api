@@ -19,6 +19,7 @@ from utils.files import (delete_file_if_exists, download_file,
                          list_files_in_directory)
 from utils.update_site_pack import clone_git_repo
 from utils.xml_utils import parse_xml_file, delete_file
+from utils.settings import get_setting
 from grab_requests.tasks import send_xml_guide
 
 
@@ -147,6 +148,8 @@ def handle_channels_from_xml(root: ET, external_id: str) -> Response:
     Extract channels and program guides from xml
     And start async tasks to be handled by workers.
     """
+    timeout_str = get_setting("TIMEOUT")
+    timeout = int(timeout_str) if timeout_str else 60
     channels = root.findall('.//channel')
     for channel in channels:
         channel_root = ET.fromstring(
@@ -162,6 +165,6 @@ def handle_channels_from_xml(root: ET, external_id: str) -> Response:
             channel_root.append(programme)
         xml_contents = ET.tostring(channel_root, encoding='unicode')
         # send_xml_guide will be broadcast to the workers to be handled async
-        send_xml_guide.delay(external_id, xml_contents)
+        send_xml_guide.delay(external_id, xml_contents, timeout)
     logger.info('Done Handling external tv guide')
     return Response({'msg': 'Done handling tv guide'}, status=status.HTTP_200_OK)
