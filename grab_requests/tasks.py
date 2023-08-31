@@ -15,7 +15,7 @@ from grab_requests.models import GrabRequest, RequestStatusEnum
 from utils.xml_utils import create_config_xml, delete_file, create_file_name
 
 
-DEFAULT_TIMEOUT = 120
+DEFAULT_TIMEOUT = 600
 
 
 load_dotenv()
@@ -36,7 +36,7 @@ def send_call_back(grab_request: GrabRequest) -> requests.Response:
     call_back_url = os.environ.get('CALL_BACK_URL')
     logger.info('Sending data to call_back_url %s', call_back_url)
     serializer = Serializer(grab_request)
-    return requests.post(call_back_url, json=serializer.data, timeout=60)
+    return requests.post(call_back_url, json=serializer.data, timeout=DEFAULT_TIMEOUT)
 
 
 def get_icon_tag(xml_str: str) -> str:
@@ -179,6 +179,6 @@ def send_xml_guide(external_id: str, xml_content: str) -> None:
     call_back_url = os.environ.get('TV_GUIDE_CALL_BACK')
     logger.info('Sending data to call_back_url %s', call_back_url)
     data = {'xml_content': xml_content, 'external_id': external_id}
-    request = requests.post(call_back_url, json=data, timeout=60)
+    request = requests.post(call_back_url, json=data, timeout=DEFAULT_TIMEOUT)
     logger.info('Response %s', request.status_code)
     return
