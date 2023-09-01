@@ -1,5 +1,7 @@
 import os
+import random
 import subprocess
+import time
 import xml.etree.ElementTree as ET
 from typing import Optional, Tuple
 from xml.sax.saxutils import escape
@@ -12,8 +14,7 @@ from rest_framework import serializers
 
 from common.custom_logging import logger
 from grab_requests.models import GrabRequest, RequestStatusEnum
-from utils.xml_utils import create_config_xml, delete_file, create_file_name
-
+from utils.xml_utils import create_config_xml, create_file_name, delete_file
 
 DEFAULT_TIMEOUT = 120
 
@@ -179,6 +180,12 @@ def send_xml_guide(external_id: str, xml_content: str, timeout: int = DEFAULT_TI
     call_back_url = os.environ.get('TV_GUIDE_CALL_BACK')
     logger.info('Sending data to call_back_url %s', call_back_url)
     data = {'xml_content': xml_content, 'external_id': external_id}
+    # odoo server we are sending requests to is unable to handle large
+    # amounts of this request, so we are waiting between requests to
+    # allow the odoo server some time to process the previous request.
+    time_to_sleep = random.randint(5, 30)
+    logger.info('Sleeping %s seconds', time_to_sleep)
+    time.sleep(time_to_sleep)
     request = requests.post(call_back_url, json=data, timeout=timeout)
     logger.info('Response %s', request.status_code)
     return
