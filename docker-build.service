@@ -1,0 +1,11 @@
+[Unit]
+Description=Run Docker Command After Docker Starts
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/docker compose -f /root/electronic-program-guide-api/docker-compose.yml -f /root/electronic-program-guide-api/docker-compose.prod.yml up --detach
+
+[Install]
+WantedBy=multi-user.target
