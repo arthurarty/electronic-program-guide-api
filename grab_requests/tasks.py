@@ -183,9 +183,9 @@ def send_xml_guide(external_id: str, xml_content: str, timeout: int = DEFAULT_TI
     # odoo server we are sending requests to is unable to handle large
     # amounts of this request, so we are waiting between requests to
     # allow the odoo server some time to process the previous request.
-    time_to_sleep = random.randint(5, 30)
-    logger.info('Sleeping %s seconds', time_to_sleep)
-    time.sleep(time_to_sleep)
+    # time_to_sleep = random.randint(5, 30)
+    # logger.info('Sleeping %s seconds', time_to_sleep)
+    # time.sleep(time_to_sleep)
     request = requests.post(call_back_url, json=data, timeout=timeout)
     logger.info('Response %s', request.status_code)
     return
