@@ -28,6 +28,10 @@ class Serializer(serializers.ModelSerializer):
         model = GrabRequest
         fields = '__all__'
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return {key: value for key, value in data.items() if value is not None}
+
 
 def send_call_back(grab_request: GrabRequest, timeout: int = 180) -> requests.Response:
     """
@@ -73,7 +77,7 @@ def run_web_grab(
     resp = send_call_back(grab_request, timeout)
     if grab_request:
         logger.info('Delete grab request %s}', grab_request.id)
-        grab_request.delete()
+        # grab_request.delete()
     logger.info(resp.status_code)
     logger.info(resp.text)
 
