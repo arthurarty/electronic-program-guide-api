@@ -41,7 +41,16 @@ def send_call_back(grab_request: GrabRequest, timeout: int = 180) -> requests.Re
     call_back_url = os.environ.get('CALL_BACK_URL')
     logger.info('Sending data to call_back_url %s', call_back_url)
     serializer = Serializer(grab_request)
-    return requests.post(call_back_url, json=serializer.data, timeout=timeout)
+    headers = {
+        "Authorization": f"Api-Key {os.environ.get('DJANGO_EPG_SHARE_API_KEY')}",
+        "Content-Type": "application/json",
+    }
+    return requests.post(
+         call_back_url,
+         json=serializer.data,
+         timeout=timeout,
+         headers=headers,
+    )
 
 
 def get_icon_tag(xml_str: str) -> str:
