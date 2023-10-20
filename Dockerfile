@@ -13,3 +13,4 @@ RUN apt-get install -yq python3-pip
 RUN pip3 install -r requirements.txt
 RUN apt install -y git
 RUN .wg++/install.sh
+RUN python3 manage.py refreshini
