@@ -193,12 +193,10 @@ def send_xml_guide(external_id: str, xml_content: str, timeout: int = DEFAULT_TI
     call_back_url = os.environ.get('TV_GUIDE_CALL_BACK')
     logger.info('Sending data to call_back_url %s', call_back_url)
     data = {'xml_content': xml_content, 'external_id': external_id}
-    # odoo server we are sending requests to is unable to handle large
-    # amounts of this request, so we are waiting between requests to
-    # allow the odoo server some time to process the previous request.
-    # time_to_sleep = random.randint(5, 30)
-    # logger.info('Sleeping %s seconds', time_to_sleep)
-    # time.sleep(time_to_sleep)
-    request = requests.post(call_back_url, json=data, timeout=timeout)
+    headers = {
+        "Authorization": f"Api-Key {os.environ.get('DJANGO_EPG_SHARE_API_KEY')}",
+        "Content-Type": "application/json",
+    }
+    request = requests.post(call_back_url, json=data, timeout=timeout, headers=headers)
     logger.info('Response %s', request.status_code)
     return
