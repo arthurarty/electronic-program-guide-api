@@ -21,7 +21,7 @@ DEFAULT_XML_STR = """<?xml version="1.0"?>
   <logging>on</logging>
   {retry}
   <timespan>{time_span}</timespan>
-  <update>f</update>
+  <update>{update_mode}</update>
   <channel site="{site}" site_id="{site_id}" xmltv_id="{xmltv_id}">{site_name}</channel>
   {additional_tags}
 </settings>
@@ -60,13 +60,18 @@ def create_config_xml(
     xmltv_id=escape(xmltv_id) if xmltv_id else None
     channel_name=escape(channel_name) if channel_name else None
     timespan = get_setting('timespan')
-    retry = get_setting('retry')
+    retry = None
+    retry_timeout = get_setting('retry_timeout')
+    retry_number = get_setting('retry_number')  # no of retries
+    update_mode = get_setting('update_mode') or 'f'
     wg_username = get_setting('WG_USERNAME')
     wg_email = get_setting('WG_EMAIL')
     wg_password = get_setting('WG_PASSWORD')
     try:
         timespan = int(timespan) if timespan else 0
-        retry = retry if retry.replace("\\", "") else '<retry time-out="5">3</retry>'
+        retry_timeout = int(retry_timeout) if retry_timeout else 5
+        retry_number = int(retry_number) if retry_number else 3
+        retry = f'<retry time-out="{retry_timeout}">{retry_number}</retry>'
     except ValueError as exception:
         logger.info('Incorrect value for setting of timespan or retry. Expected integers')
         logger.info('Failed to create config xml')
@@ -90,6 +95,7 @@ def create_config_xml(
         retry=retry,
         additional_tags=additional_tags,
         guide_name=guide_name,
+        update_mode=update_mode
     )
     root = ET.fromstring(xml_str)
     tree = ET.ElementTree(root)

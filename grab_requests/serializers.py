@@ -57,6 +57,12 @@ class GrabSettingSerializer(serializers.ModelSerializer):
         fields='__all__'
 
 
+
+class GrabSettingUpdateSerializer(serializers.Serializer):
+    setting_name = serializers.CharField()
+    setting_value = serializers.CharField()
+
+
 class FileNameSerializer(serializers.Serializer):
     file_name = serializers.CharField(max_length=255)
 
