@@ -21,6 +21,7 @@ from grab_requests.views import (DeleteCustomIni, ExternalTvGuides,
                                  FileUploadView, GrabRequestBulkCreateView,
                                  GrabRequestDetailView, GrabRequestListView,
                                  GrabSettingDetailView, GrabSettingListView,
+                                 GrabSettingUpdateView,
                                  ListCustomIni, UpdateSitePack)
 
 urlpatterns = [
@@ -28,6 +29,7 @@ urlpatterns = [
     path('<int:pk>/', GrabRequestDetailView.as_view(), name='grab_detail_view'),
     path('bulk-create', GrabRequestBulkCreateView.as_view(), name='bulk_create'),
     path('settings', GrabSettingListView.as_view(), name='grab_settings'),
+    path('settings/update', GrabSettingUpdateView.as_view(), name='grab_setting_update'),
     path('settings/<int:pk>/', GrabSettingDetailView.as_view(), name='grab_settings_update'),
     path('update-site-pack', UpdateSitePack.as_view(), name='update_site_pack'),
     path('admin/', admin.site.urls),

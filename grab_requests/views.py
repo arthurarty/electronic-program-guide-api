@@ -14,7 +14,7 @@ from grab_requests.models import GrabRequest, GrabSetting
 from grab_requests.serializers import (ExternalTvGuideSerializer,
                                        FileNameSerializer,
                                        GrabRequestSerializer,
-                                       GrabSettingSerializer)
+                                       GrabSettingSerializer, GrabSettingUpdateSerializer)
 from utils.files import (delete_file_if_exists, download_file,
                          list_files_in_directory)
 from utils.update_site_pack import clone_git_repo
@@ -50,6 +50,24 @@ class GrabSettingListView(generics.ListCreateAPIView):
 class GrabSettingDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = GrabSettingSerializer
     queryset = GrabSetting.objects.all()
+
+
+class GrabSettingUpdateView(APIView):
+    serializer_class = GrabSettingUpdateSerializer
+
+    def put(self, request: HttpRequest, format=None) -> Response:
+        serializer = GrabSettingUpdateSerializer(data=request.data, many=False)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        setting_name = serializer.data['setting_name']
+        grab_setting = GrabSetting.objects.filter(setting_name=setting_name).first()
+        if not grab_setting:
+            return Response('No such setting', status=status.HTTP_404_NOT_FOUND)
+        setting_value = serializer.data['setting_value']
+        grab_setting.setting_value = setting_value
+        grab_setting.save()
+        serializier = GrabSettingSerializer(grab_setting)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class UpdateSitePack(APIView):
