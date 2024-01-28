@@ -60,13 +60,17 @@ def create_config_xml(
     xmltv_id=escape(xmltv_id) if xmltv_id else None
     channel_name=escape(channel_name) if channel_name else None
     timespan = get_setting('timespan')
-    retry = get_setting('retry')
+    retry = None
+    retry_timeout = get_setting('retry_timeout')
+    retry_number = get_setting('retry_number')  # no of retries
     wg_username = get_setting('WG_USERNAME')
     wg_email = get_setting('WG_EMAIL')
     wg_password = get_setting('WG_PASSWORD')
     try:
         timespan = int(timespan) if timespan else 0
-        retry = retry if retry.replace("\\", "") else '<retry time-out="5">3</retry>'
+        retry_timeout = int(retry_timeout) if retry_timeout else 5
+        retry_number = int(retry_number) if retry_number else 3
+        retry = f'<retry time-out="{retry_timeout}">{retry_number}</retry>'
     except ValueError as exception:
         logger.info('Incorrect value for setting of timespan or retry. Expected integers')
         logger.info('Failed to create config xml')
