@@ -66,8 +66,8 @@ class GrabSettingUpdateView(APIView):
         setting_value = serializer.data['setting_value']
         grab_setting.setting_value = setting_value
         grab_setting.save()
-        serializier = GrabSettingSerializer(grab_setting)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        updated_serializer = GrabSettingSerializer(grab_setting)
+        return Response(updated_serializer.data, status=status.HTTP_200_OK)
 
 
 class UpdateSitePack(APIView):
